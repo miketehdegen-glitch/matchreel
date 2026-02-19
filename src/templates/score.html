@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1280px;
+      height: 720px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 30% 70%, rgba(255, 0, 80, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 30%, rgba(0, 150, 255, 0.2) 0%, transparent 50%);
+    }
+    
+    .accent-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff0050, #00d4ff);
+    }
+    
+    .accent-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00d4ff, #ff0050);
+    }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    
+    .full-time {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: 12px;
+      text-transform: uppercase;
+      color: #ff0050;
+      margin-bottom: 40px;
+    }
+    
+    .score-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+    }
+    
+    .team {
+      text-align: center;
+      min-width: 300px;
+    }
+    
+    .team-name {
+      font-size: 42px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+    
+    .score {
+      font-size: 140px;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 0 60px rgba(0, 212, 255, 0.5);
+    }
+    
+    .score-divider {
+      font-size: 80px;
+      color: #444;
+      font-weight: 300;
+    }
+    
+    .winner .score {
+      color: #00d4ff;
+    }
+    
+    .winner .team-name {
+      color: #00d4ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="accent-top"></div>
+  <div class="accent-bottom"></div>
+  
+  <div class="content">
+    <div class="full-time">Full Time</div>
+    
+    <div class="score-container">
+      <div class="team {{HOME_WINNER}}">
+        <div class="team-name">{{TEAM_NAME}}</div>
+        <div class="score">{{HOME_SCORE}}</div>
+      </div>
+      
+      <div class="score-divider">-</div>
+      
+      <div class="team {{AWAY_WINNER}}">
+        <div class="team-name">{{OPPONENT}}</div>
+        <div class="score">{{AWAY_SCORE}}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

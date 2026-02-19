@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Match - MatchReel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    
+    .logo span { color: #00ff88; }
+    
+    .subtitle { color: #8899a6; }
+    
+    .form-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 40px;
+    }
+    
+    .form-card h2 {
+      margin-bottom: 30px;
+      color: #00ff88;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #8899a6;
+      font-weight: 500;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #00ff88;
+    }
+    
+    .form-group input::placeholder { color: #555; }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .squad-section {
+      background: rgba(0,255,136,0.05);
+      border-radius: 15px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+    
+    .squad-section h3 {
+      margin-bottom: 15px;
+      color: #00d4ff;
+    }
+    
+    .squad-section p {
+      color: #8899a6;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .squad-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .player-tag {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .player-tag .remove {
+      cursor: pointer;
+      color: #ff4757;
+      font-weight: bold;
+    }
+    
+    .add-player {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .add-player input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+    }
+    
+    .add-player button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #00d4ff;
+      color: #0f1923;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin-top: 20px;
+    }
+    
+    .btn:hover { transform: scale(1.02); }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      color: #0f1923;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .success-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .success-modal.show { display: flex; }
+    
+    .success-content {
+      background: #1a2a3a;
+      padding: 50px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 500px;
+    }
+    
+    .success-content h2 {
+      color: #00ff88;
+      margin-bottom: 20px;
+    }
+    
+    .share-link {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: monospace;
+    }
+    
+    .copy-btn {
+      background: #00ff88;
+      color: #0f1923;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    
+    .logo-upload {
+      cursor: pointer;
+    }
+    
+    .logo-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.05);
+      border: 3px dashed rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    
+    .logo-preview:hover {
+      border-color: #00ff88;
+    }
+    
+    .logo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .logo-preview .placeholder {
+      color: #8899a6;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 10px;
+    }
+    
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .color-option {
+      cursor: pointer;
+      text-align: center;
+      padding: 8px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    
+    .color-option:hover {
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .color-option.selected {
+      border-color: #00ff88;
+      background: rgba(0,255,136,0.1);
+    }
+    
+    .color-swatch {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .color-option span {
+      font-size: 0.75rem;
+      color: #8899a6;
+    }
+    
+    .color-option.selected span {
+      color: #00ff88;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">⚽ Match<span>Reel</span></h1>
+      <p class="subtitle">Create a new match for your team</p>
+    </div>
+    
+    <div class="form-card">
+      <h2>Match Details</h2>
+      
+      <div class="form-group">
+        <label for="teamName">Your Team Name</label>
+        <input type="text" id="teamName" placeholder="e.g. Westside United U10s">
+      </div>
+      
+      <div class="form-group">
+        <label>Team Logo (optional)</label>
+        <div class="logo-upload" onclick="document.getElementById('teamLogo').click()">
+          <div class="logo-preview" id="logoPreview">
+            <span class="placeholder">⚽ Click to add logo</span>
+          </div>
+          <input type="file" id="teamLogo" accept="image/*" style="display:none" onchange="previewLogo(this)">
+        </div>
+        <p style="color:#666; font-size:0.85rem; margin-top:8px;">Shown at the start of your highlight reel</p>
+      </div>
+      
+      <div class="form-group">
+        <label>Team Colors</label>
+        <p style="color:#666; font-size:0.85rem; margin-bottom:12px;">Pick colors for your graphics (POTM, team slide, etc.)</p>
+        <div class="color-options" id="colorOptions">
+          <div class="color-option selected" data-primary="#0099cc" data-secondary="#00ccff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #0099cc, #00ccff);"></div>
+            <span>Blue</span>
+          </div>
+          <div class="color-option" data-primary="#cc0000" data-secondary="#ff3333" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #cc0000, #ff3333);"></div>
+            <span>Red</span>
+          </div>
+          <div class="color-option" data-primary="#00aa00" data-secondary="#00dd44" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #00aa00, #00dd44);"></div>
+            <span>Green</span>
+          </div>
+          <div class="color-option" data-primary="#ff8800" data-secondary="#ffaa33" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #ff8800, #ffaa33);"></div>
+            <span>Orange</span>
+          </div>
+          <div class="color-option" data-primary="#dddd00" data-secondary="#ffff44" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #dddd00, #ffff44);"></div>
+            <span>Yellow</span>
+          </div>
+          <div class="color-option" data-primary="#8800cc" data-secondary="#aa44ff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #8800cc, #aa44ff);"></div>
+            <span>Purple</span>
+          </div>
+          <div class="color-option" data-primary="#ff69b4" data-secondary="#ff99cc" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #ff69b4, #ff99cc);"></div>
+            <span>Pink</span>
+          </div>
+          <div class="color-option" data-primary="#001838" data-secondary="#d4af37" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #001838 50%, #d4af37 50%);"></div>
+            <span>Navy/Gold</span>
+          </div>
+          <div class="color-option" data-primary="#cc0000" data-secondary="#ffffff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #cc0000 50%, #ffffff 50%);"></div>
+            <span>Red/White</span>
+          </div>
+          <div class="color-option" data-primary="#0055aa" data-secondary="#ffffff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #0055aa 50%, #ffffff 50%);"></div>
+            <span>Blue/White</span>
+          </div>
+          <div class="color-option" data-primary="#00aa00" data-secondary="#ffffff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #00aa00 50%, #ffffff 50%);"></div>
+            <span>Green/White</span>
+          </div>
+          <div class="color-option" data-primary="#111111" data-secondary="#ffcc00" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #111111 50%, #ffcc00 50%);"></div>
+            <span>Black/Gold</span>
+          </div>
+          <div class="color-option" data-primary="#111111" data-secondary="#ffffff" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #111111 50%, #ffffff 50%);"></div>
+            <span>Black/White</span>
+          </div>
+          <div class="color-option" data-primary="#111111" data-secondary="#cc0000" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #111111 50%, #cc0000 50%);"></div>
+            <span>Black/Red</span>
+          </div>
+          <div class="color-option" data-primary="#7b1a3a" data-secondary="#00a0de" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #7b1a3a 50%, #00a0de 50%);"></div>
+            <span>Claret/Blue</span>
+          </div>
+          <div class="color-option" data-primary="#cc0000" data-secondary="#0055aa" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #cc0000 50%, #0055aa 50%);"></div>
+            <span>Red/Blue</span>
+          </div>
+          <div class="color-option" data-primary="#722f37" data-secondary="#d4af37" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #722f37 50%, #d4af37 50%);"></div>
+            <span>Maroon/Gold</span>
+          </div>
+          <div class="color-option" data-primary="#ff69b4" data-secondary="#111111" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #ff69b4 50%, #111111 50%);"></div>
+            <span>Pink/Black</span>
+          </div>
+          <div class="color-option" data-primary="#00aa00" data-secondary="#ffdd00" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #00aa00 50%, #ffdd00 50%);"></div>
+            <span>Green/Yellow</span>
+          </div>
+          <div class="color-option" data-primary="#008080" data-secondary="#00b3b3" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #008080, #00b3b3);"></div>
+            <span>Teal</span>
+          </div>
+          <div class="color-option" data-primary="#008080" data-secondary="#111111" onclick="selectColor(this)">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #008080 50%, #111111 50%);"></div>
+            <span>Teal/Black</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="opponent">Opponent</label>
+        <input type="text" id="opponent" placeholder="e.g. Eastside FC">
+      </div>
+      
+      <div class="form-group">
+        <label>Opponent Logo (optional)</label>
+        <div class="logo-upload" onclick="document.getElementById('opponentLogo').click()">
+          <div class="logo-preview" id="opponentLogoPreview">
+            <span class="placeholder">🏴 Click to add</span>
+          </div>
+          <input type="file" id="opponentLogo" accept="image/*" style="display:none" onchange="previewOpponentLogo(this)">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="matchDate">Match Date</label>
+          <input type="date" id="matchDate">
+        </div>
+        <div class="form-group">
+          <label for="matchTime">Kick-off Time</label>
+          <input type="time" id="matchTime">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="competition">Competition (optional)</label>
+        <input type="text" id="competition" placeholder="e.g. League Cup Semi Final">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="manager">Manager Name</label>
+          <input type="text" id="manager" placeholder="e.g. Coach Dave">
+        </div>
+        <div class="form-group">
+          <label for="venue">Venue / Location</label>
+          <input type="text" id="venue" placeholder="e.g. Highfield Park">
+        </div>
+      </div>
+      
+      <div class="squad-section">
+        <h3>👥 Squad List</h3>
+        <p>Add your players so parents can tag goals correctly</p>
+        
+        <div class="add-player">
+          <input type="text" id="playerName" placeholder="Player name">
+          <button onclick="addPlayer()">Add</button>
+        </div>
+        
+        <div class="squad-list" id="squadList"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="adminEmail">Your Email (to receive the final reel)</label>
+        <input type="email" id="adminEmail" placeholder="you@email.com">
+      </div>
+      
+      <button class="btn btn-primary" id="createBtn" onclick="createMatch()">
+        Create Match & Get Share Link
+      </button>
+    </div>
+  </div>
+  
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <h2>🎉 Match Created!</h2>
+      
+      <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: #00ff88; font-weight: 600; margin-bottom: 10px;">📋 YOUR ADMIN LINK (save this!):</p>
+        <a class="share-link" id="adminLink" href="#" target="_blank" style="font-size: 0.85rem; color: #00ff88; word-break: break-all;"></a>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button class="copy-btn" onclick="openAdminLink()" style="background: #00ff88; flex: 1;">🚀 Open Admin</button>
+          <button class="copy-btn" onclick="copyAdminLink()" style="background: rgba(255,255,255,0.2); flex: 1;">📋 Copy</button>
+        </div>
+      </div>
+      
+      <div style="background: rgba(0,212,255,0.1); padding: 20px; border-radius: 12px;">
+        <p style="color: #00d4ff; font-weight: 600; margin-bottom: 10px;">📤 SHARE WITH PARENTS:</p>
+        <div class="share-link" id="shareLink" style="color: #00d4ff; word-break: break-all;"></div>
+        <button class="copy-btn" onclick="copyLink()" style="background: #00d4ff; width: 100%; margin-top: 10px;">📋 Copy Link for WhatsApp</button>
+      </div>
+      
+      <p style="margin-top: 20px; color: #8899a6;">Save your admin link - you'll need it to manage the match and create the highlight reel!</p>
+    </div>
+  </div>
+  
+  <script>
+    let squad = [];
+    let teamLogoFile = null;
+    let opponentLogoFile = null;
+    let teamColors = { primary: '#0099cc', secondary: '#00ccff' };
+    
+    function selectColor(el) {
+      document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+      teamColors.primary = el.dataset.primary;
+      teamColors.secondary = el.dataset.secondary;
+    }
+    
+    // Set default date to today
+    document.getElementById('matchDate').valueAsDate = new Date();
+    
+    function previewLogo(input) {
+      if (input.files && input.files[0]) {
+        teamLogoFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" alt="Logo">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    function previewOpponentLogo(input) {
+      if (input.files && input.files[0]) {
+        opponentLogoFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('opponentLogoPreview').innerHTML = `<img src="${e.target.result}" alt="Opponent Logo">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    function addPlayer() {
+      const input = document.getElementById('playerName');
+      const name = input.value.trim();
+      
+      if (name && !squad.includes(name)) {
+        squad.push(name);
+        renderSquad();
+        input.value = '';
+      }
+      input.focus();
+    }
+    
+    // Allow Enter key to add player
+    document.getElementById('playerName').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addPlayer();
+    });
+    
+    function removePlayer(index) {
+      squad.splice(index, 1);
+      renderSquad();
+    }
+    
+    function renderSquad() {
+      const list = document.getElementById('squadList');
+      list.innerHTML = squad.map((player, i) => `
+        <div class="player-tag">
+          <span>${player}</span>
+          <span class="remove" onclick="removePlayer(${i})">×</span>
+        </div>
+      `).join('');
+    }
+    
+    async function createMatch() {
+      const teamName = document.getElementById('teamName').value.trim();
+      const opponent = document.getElementById('opponent').value.trim();
+      const matchDate = document.getElementById('matchDate').value;
+      const matchTime = document.getElementById('matchTime').value;
+      const competition = document.getElementById('competition').value.trim();
+      const manager = document.getElementById('manager').value.trim();
+      const venue = document.getElementById('venue').value.trim();
+      const adminEmail = document.getElementById('adminEmail').value.trim();
+      
+      if (!teamName || !opponent || !matchDate) {
+        alert('Please fill in team name, opponent, and date');
+        return;
+      }
+      
+      if (squad.length === 0) {
+        alert('Please add at least one player to the squad');
+        return;
+      }
+      
+      const btn = document.getElementById('createBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+      
+      try {
+        // Use FormData to include logo file
+        const formData = new FormData();
+        formData.append('teamName', teamName);
+        formData.append('opponent', opponent);
+        formData.append('matchDate', matchDate);
+        formData.append('matchTime', matchTime);
+        formData.append('competition', competition);
+        formData.append('manager', manager);
+        formData.append('venue', venue);
+        formData.append('adminEmail', adminEmail);
+        formData.append('squad', JSON.stringify(squad));
+        formData.append('colors', JSON.stringify(teamColors));
+        if (teamLogoFile) {
+          formData.append('logo', teamLogoFile);
+        }
+        if (opponentLogoFile) {
+          formData.append('opponentLogo', opponentLogoFile);
+        }
+        
+        const res = await fetch('/api/matches', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          const shareUrl = `${window.location.origin}/match/${data.matchId}`;
+          const adminUrl = `${window.location.origin}/admin/${data.matchId}?token=${data.adminToken}`;
+          
+          const shareLinkEl = document.getElementById('shareLink');
+          shareLinkEl.textContent = shareUrl;
+          shareLinkEl.href = shareUrl;
+          
+          const adminLinkEl = document.getElementById('adminLink');
+          adminLinkEl.textContent = adminUrl;
+          adminLinkEl.href = adminUrl;
+          
+          document.getElementById('successModal').classList.add('show');
+        } else {
+          throw new Error(data.error || 'Failed to create match');
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Create Match & Get Share Link';
+      }
+    }
+    
+    function copyLink() {
+      const link = document.getElementById('shareLink').textContent;
+      navigator.clipboard.writeText(link);
+      event.target.textContent = '✓ Copied!';
+      setTimeout(() => {
+        event.target.textContent = '📋 Copy';
+      }, 2000);
+    }
+    
+    function copyAdminLink() {
+      const link = document.getElementById('adminLink').textContent;
+      navigator.clipboard.writeText(link);
+      event.target.textContent = '✓ Copied!';
+      setTimeout(() => {
+        event.target.textContent = '📋 Copy';
+      }, 2000);
+    }
+    
+    function openAdminLink() {
+      const link = document.getElementById('adminLink').href;
+      window.open(link, '_blank');
+    }
+    
+    function openShareLink() {
+      const link = document.getElementById('shareLink').href;
+      window.open(link, '_blank');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 50% 50%, rgba(255, 0, 80, 0.1) 0%, transparent 50%);
+    }
+    
+    .accent-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff0050, #00d4ff);
+    }
+    
+    .accent-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00d4ff, #ff0050);
+    }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 15px;
+    }
+    
+    .logo span {
+      color: #00d4ff;
+    }
+    
+    .tagline {
+      font-family: 'Roboto', sans-serif;
+      font-size: 20px;
+      color: #666;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    
+    .icon {
+      font-size: 60px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="accent-top"></div>
+  <div class="accent-bottom"></div>
+  
+  <div class="content">
+    <div class="icon">⚽</div>
+    <div class="logo">Match<span>Reel</span></div>
+    <div class="tagline">Highlights That Matter</div>
+  </div>
+</body>
+</html>

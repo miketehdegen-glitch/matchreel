@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 50% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+    }
+    
+    .accent-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00d4ff, #00ff88);
+    }
+    
+    .accent-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00ff88, #00d4ff);
+    }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 60px;
+    }
+    
+    .title {
+      font-size: 36px;
+      font-weight: 500;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: #00d4ff;
+      margin-bottom: 50px;
+    }
+    
+    .trophy {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .players-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      max-width: 1000px;
+    }
+    
+    .player {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 136, 0.1));
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      padding: 12px 28px;
+      font-size: 24px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="accent-top"></div>
+  <div class="accent-bottom"></div>
+  
+  <div class="content">
+    <div class="trophy">🏆</div>
+    <div class="title">The Team</div>
+    
+    <div class="players-grid">
+      {{PLAYERS}}
+    </div>
+  </div>
+</body>
+</html>

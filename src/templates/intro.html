@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(180deg, #0c1829 0%, #0a1220 50%, #060d17 100%);
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Sky Sports style top bar */
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(90deg, #cc0000, #ff0033);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .competition-badge {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #fff;
+    }
+    
+    /* Main match card */
+    .match-card {
+      position: absolute;
+      top: 100px;
+      left: 80px;
+      right: 80px;
+      bottom: 80px;
+      background: linear-gradient(135deg, rgba(20,35,55,0.95) 0%, rgba(15,25,40,0.98) 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Teams section */
+    .teams-section {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .team {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .team-logo-container {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    
+    .team-logo-container img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+    
+    .team-logo-container .placeholder {
+      font-size: 50px;
+    }
+    
+    .team-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 42px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    
+    .manager {
+      font-size: 16px;
+      color: #8899aa;
+      font-weight: 400;
+    }
+    
+    /* VS divider */
+    .vs-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 40px;
+    }
+    
+    .vs {
+      font-family: 'Oswald', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: #ff0033;
+      text-shadow: 0 0 30px rgba(255,0,50,0.5);
+    }
+    
+    /* Info bar at bottom */
+    .info-bar {
+      background: rgba(0,0,0,0.4);
+      padding: 25px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .info-item {
+      text-align: center;
+    }
+    
+    .info-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #667788;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+    }
+    
+    .info-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.15);
+    }
+    
+    /* Accent elements */
+    .glow-left {
+      position: absolute;
+      top: 50%;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,0,50,0.15) 0%, transparent 70%);
+      transform: translateY(-50%);
+    }
+    
+    .glow-right {
+      position: absolute;
+      top: 50%;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0,150,255,0.15) 0%, transparent 70%);
+      transform: translateY(-50%);
+    }
+    
+    /* Branding */
+    .branding {
+      position: absolute;
+      bottom: 25px;
+      right: 30px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 2px;
+    }
+    
+    .branding span {
+      color: rgba(0,255,136,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+  
+  <div class="top-bar">
+    <div class="competition-badge">{{COMPETITION}}</div>
+  </div>
+  
+  <div class="match-card">
+    <div class="teams-section">
+      <div class="team">
+        <div class="team-logo-container">
+          {{LOGO}}
+        </div>
+        <div class="team-name">{{TEAM_NAME}}</div>
+        <div class="manager">{{MANAGER}}</div>
+      </div>
+      
+      <div class="vs-section">
+        <div class="vs">VS</div>
+      </div>
+      
+      <div class="team">
+        <div class="team-logo-container">
+          {{OPPONENT_LOGO}}
+        </div>
+        <div class="team-name">{{OPPONENT}}</div>
+        <div class="manager">&nbsp;</div>
+      </div>
+    </div>
+    
+    <div class="info-bar">
+      <div class="info-item">
+        <div class="info-label">Date</div>
+        <div class="info-value">{{DATE}}</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Kick-Off</div>
+        <div class="info-value">{{TIME}}</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Venue</div>
+        <div class="info-value">{{VENUE}}</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="branding">Match<span>Reel</span></div>
+</body>
+</html>

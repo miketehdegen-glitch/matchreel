@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MatchReel Graphics Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #1a1a1a;
+      padding: 40px;
+      font-family: Arial, sans-serif;
+    }
+    
+    .graphics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .graphic-card {
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    
+    .graphic-card h3 {
+      color: #fff;
+      margin-bottom: 15px;
+    }
+    
+    /* ========== GRAPHIC STYLES ========== */
+    
+    .overlay {
+      width: 400px;
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* GOAL Overlay */
+    .goal-overlay {
+      background: linear-gradient(135deg, rgba(0,255,136,0.95) 0%, rgba(0,200,100,0.95) 100%);
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    }
+    
+    .goal-overlay .icon {
+      font-size: 50px;
+      margin-right: 20px;
+    }
+    
+    .goal-overlay .text {
+      color: #0a2010;
+    }
+    
+    .goal-overlay .label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    
+    .goal-overlay .scorer {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    /* SAVE Overlay */
+    .save-overlay {
+      background: linear-gradient(135deg, rgba(0,180,255,0.95) 0%, rgba(0,140,200,0.95) 100%);
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    }
+    
+    .save-overlay .icon {
+      font-size: 50px;
+      margin-right: 20px;
+    }
+    
+    .save-overlay .text {
+      color: #0a1520;
+    }
+    
+    .save-overlay .label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    
+    .save-overlay .sub {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    /* SKILLS Overlay */
+    .skills-overlay {
+      background: linear-gradient(135deg, rgba(255,100,100,0.95) 0%, rgba(200,50,50,0.95) 100%);
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    }
+    
+    .skills-overlay .icon {
+      font-size: 50px;
+      margin-right: 20px;
+    }
+    
+    .skills-overlay .text {
+      color: #200a0a;
+    }
+    
+    .skills-overlay .label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    
+    /* CHANCE Overlay */
+    .chance-overlay {
+      background: linear-gradient(135deg, rgba(255,180,50,0.95) 0%, rgba(220,140,20,0.95) 100%);
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    }
+    
+    .chance-overlay .icon {
+      font-size: 50px;
+      margin-right: 20px;
+    }
+    
+    .chance-overlay .text {
+      color: #201505;
+    }
+    
+    .chance-overlay .label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    
+    /* SCORE Overlay */
+    .score-overlay {
+      background: linear-gradient(135deg, rgba(20,20,40,0.95) 0%, rgba(40,40,80,0.95) 100%);
+      border: 3px solid #00ff88;
+      width: 400px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+    }
+    
+    .score-overlay .title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      color: #00ff88;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+    
+    .score-overlay .teams {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+    
+    .score-overlay .score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      color: #fff;
+      letter-spacing: 10px;
+    }
+    
+    .score-overlay .score .divider {
+      color: #00ff88;
+      margin: 0 15px;
+    }
+    
+    /* POTM Overlay */
+    .potm-overlay {
+      background: linear-gradient(135deg, rgba(30,30,50,0.98) 0%, rgba(50,50,80,0.98) 100%);
+      border: 3px solid #ffd700;
+      width: 400px;
+      height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      padding: 20px;
+    }
+    
+    .potm-overlay .star {
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+    
+    .potm-overlay .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: #ffd700;
+      letter-spacing: 3px;
+      margin-bottom: 15px;
+    }
+    
+    .potm-overlay .photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      padding: 4px;
+      margin-bottom: 15px;
+    }
+    
+    .potm-overlay .photo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    
+    .potm-overlay .name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    
+    /* TEAM OF THE DAY */
+    .tod-overlay {
+      background: linear-gradient(135deg, rgba(20,30,50,0.98) 0%, rgba(40,60,90,0.98) 100%);
+      border: 3px solid #00d4ff;
+      width: 400px;
+      padding: 25px;
+      border-radius: 15px;
+    }
+    
+    .tod-overlay .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: #00d4ff;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .tod-overlay .players {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    
+    .tod-overlay .player {
+      background: rgba(0,212,255,0.2);
+      border: 1px solid rgba(0,212,255,0.5);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    
+    /* INTRO */
+    .intro-overlay {
+      background: linear-gradient(135deg, rgba(15,25,35,0.98) 0%, rgba(25,45,65,0.98) 100%);
+      width: 400px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    
+    .intro-overlay .matchday {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      color: #00ff88;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+    
+    .intro-overlay .team {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    
+    .intro-overlay .vs {
+      font-family: 'Oswald', sans-serif;
+      font-size: 24px;
+      color: #00ff88;
+      margin: 10px 0;
+    }
+    
+    .intro-overlay .date {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16px;
+      color: #8899aa;
+      margin-top: 20px;
+    }
+    
+    h1 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .instructions {
+      color: #888;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚽ MatchReel Graphics</h1>
+  <p class="instructions">Right-click each graphic → Save Image As (or screenshot)</p>
+  
+  <div class="graphics-grid">
+    
+    <div class="graphic-card">
+      <h3>GOAL Overlay</h3>
+      <div class="overlay goal-overlay">
+        <div class="icon">⚽</div>
+        <div class="text">
+          <div class="label">GOAL!</div>
+          <div class="scorer">Jamie Smith</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>SAVE Overlay</h3>
+      <div class="overlay save-overlay">
+        <div class="icon">🧤</div>
+        <div class="text">
+          <div class="label">GREAT SAVE!</div>
+          <div class="sub">What a stop!</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>SKILLS Overlay</h3>
+      <div class="overlay skills-overlay">
+        <div class="icon">🔥</div>
+        <div class="text">
+          <div class="label">SKILLS!</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>CHANCE Overlay</h3>
+      <div class="overlay chance-overlay">
+        <div class="icon">🎯</div>
+        <div class="text">
+          <div class="label">CLOSE!</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>Final Score</h3>
+      <div class="score-overlay">
+        <div class="title">Full Time</div>
+        <div class="teams">Westside United vs Eastside FC</div>
+        <div class="score">
+          <span>3</span>
+          <span class="divider">-</span>
+          <span>2</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>Player of the Match</h3>
+      <div class="potm-overlay">
+        <div class="star">⭐</div>
+        <div class="title">Player of the Match</div>
+        <div class="photo">
+          <div class="photo-inner">👤</div>
+        </div>
+        <div class="name">Jamie Smith</div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>Team of the Day</h3>
+      <div class="tod-overlay">
+        <div class="title">🏆 Team of the Day</div>
+        <div class="players">
+          <span class="player">Jamie Smith</span>
+          <span class="player">Tyler Jones</span>
+          <span class="player">Alex Wilson</span>
+          <span class="player">Sam Brown</span>
+          <span class="player">Chris Davis</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graphic-card">
+      <h3>Match Intro</h3>
+      <div class="intro-overlay">
+        <div class="matchday">Match Day</div>
+        <div class="team">Westside United</div>
+        <div class="vs">VS</div>
+        <div class="team">Eastside FC</div>
+        <div class="date">Saturday 19th February</div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>

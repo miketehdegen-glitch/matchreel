@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchReel - Football Highlights Made Easy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    
+    .hero { text-align: center; margin-bottom: 60px; }
+    
+    .logo {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    
+    .logo span { color: #00ff88; }
+    
+    .tagline {
+      font-size: 1.5rem;
+      color: #8899a6;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .price-badge {
+      display: inline-block;
+      background: #00ff88;
+      color: #0f1923;
+      padding: 12px 35px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    
+    .how-it-works {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 50px;
+      margin: 50px 0;
+    }
+    
+    .how-it-works h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+      color: #00ff88;
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+    }
+    
+    .step {
+      text-align: center;
+      padding: 30px 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+    }
+    
+    .step-icon { font-size: 3rem; margin-bottom: 20px; }
+    .step h3 { color: #00d4ff; margin-bottom: 10px; }
+    .step p { color: #8899a6; line-height: 1.5; }
+    
+    .cta-section {
+      text-align: center;
+      margin: 60px 0;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 18px 50px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0,255,136,0.3);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      color: #0f1923;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin: 50px 0;
+    }
+    
+    .feature {
+      background: rgba(255,255,255,0.03);
+      padding: 30px;
+      border-radius: 15px;
+      border-left: 4px solid #00ff88;
+    }
+    
+    .feature h3 { color: #fff; margin-bottom: 10px; }
+    .feature p { color: #8899a6; }
+    
+    .sample-reel {
+      background: rgba(0,255,136,0.05);
+      border: 2px solid rgba(0,255,136,0.2);
+      border-radius: 20px;
+      padding: 40px;
+      margin: 50px 0;
+    }
+    
+    .sample-reel h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00ff88;
+    }
+    
+    .reel-structure {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .reel-item {
+      background: rgba(255,255,255,0.05);
+      padding: 15px 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .reel-item .icon { font-size: 1.5rem; }
+    .reel-item .label { color: #8899a6; }
+    .reel-item .value { color: #fff; font-weight: 600; margin-left: auto; }
+    
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #8899a6;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1 class="logo">⚽ Match<span>Reel</span></h1>
+      <p class="tagline">Parents film the match. We create the highlights.<br>Professional football reels for your kids' team.</p>
+      <a href="/create" class="btn btn-primary" style="margin-top: 25px; font-size: 1.3rem;">🎬 Create Your MatchReel</a>
+    </div>
+    
+    <div class="how-it-works">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-icon">📋</div>
+          <h3>1. Create Match</h3>
+          <p>Team admin sets up the match with squad list and opponent</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">📲</div>
+          <h3>2. Share Link</h3>
+          <p>Drop the link in your WhatsApp group for all parents</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🎥</div>
+          <h3>3. Parents Upload</h3>
+          <p>Everyone uploads their clips — goals, saves, chances</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🎬</div>
+          <h3>4. Get Your Reel</h3>
+          <p>We stitch it into an epic highlight video with music</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sample-reel">
+      <h2>What You Get</h2>
+      <div class="reel-structure">
+        <div class="reel-item">
+          <span class="icon">🏟️</span>
+          <span class="label">Intro</span>
+          <span class="value">Team vs Opponent</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">⚽</span>
+          <span class="label">Goal</span>
+          <span class="value">Jamie Smith 12'</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">🧤</span>
+          <span class="label">Save</span>
+          <span class="value">Goalkeeper Stop</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">⚽</span>
+          <span class="label">Goal</span>
+          <span class="value">Tyler Jones 34'</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">🎯</span>
+          <span class="label">Chance</span>
+          <span class="value">Close miss!</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">⚽</span>
+          <span class="label">Goal</span>
+          <span class="value">Jamie Smith 67'</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">📊</span>
+          <span class="label">Final Score</span>
+          <span class="value">3 - 2</span>
+        </div>
+        <div class="reel-item">
+          <span class="icon">⭐</span>
+          <span class="label">Player of the Match</span>
+          <span class="value">Jamie Smith</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="features">
+      <div class="feature">
+        <h3>🎵 Epic Music</h3>
+        <p>Professional soundtrack that makes every goal feel like a cup final winner</p>
+      </div>
+      <div class="feature">
+        <h3>⚡ Fast Turnaround</h3>
+        <p>Upload after the match, get your reel within hours</p>
+      </div>
+      <div class="feature">
+        <h3>📱 Easy Sharing</h3>
+        <p>Perfect for WhatsApp, Instagram, or the team group chat</p>
+      </div>
+      <div class="feature">
+        <h3>👨‍👩‍👧 Made for Parents</h3>
+        <p>Everyone's clips, one amazing video. Memories that last.</p>
+      </div>
+    </div>
+    
+    <div class="cta-section">
+      <span class="price-badge" style="margin-bottom: 25px;">Just £3 per match</span>
+      <br><br>
+      <a href="/create" class="btn btn-primary">Create Your First Match →</a>
+      <p style="margin-top: 20px; color: #8899a6;">No account needed. Pay only when you're happy.</p>
+    </div>
+    
+    <footer>
+      <p>MatchReel — Making matchday memories</p>
+      <p style="margin-top: 10px;">Questions? Email us at hello@matchreel.co.uk</p>
+    </footer>
+  </div>
+</body>
+</html>

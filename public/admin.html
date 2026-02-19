@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - MatchReel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    
+    .header { text-align: center; margin-bottom: 30px; }
+    .logo { font-size: 1.5rem; font-weight: 800; }
+    .logo span { color: #00ff88; }
+    
+    .match-header {
+      background: rgba(0,255,136,0.1);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .match-header h2 { margin-bottom: 10px; }
+    .match-header .vs { color: #00ff88; }
+    
+    .share-box {
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+    
+    .share-box label { color: #8899a6; font-size: 0.9rem; }
+    
+    .share-link {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    
+    .share-link input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-family: monospace;
+    }
+    
+    .share-link button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #00d4ff;
+      color: #0f1923;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .stat {
+      background: rgba(255,255,255,0.03);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .stat .number { font-size: 2rem; font-weight: 800; color: #00ff88; }
+    .stat .label { color: #8899a6; margin-top: 5px; }
+    
+    .section {
+      background: rgba(255,255,255,0.03);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .section h3 { color: #00d4ff; margin-bottom: 20px; }
+    
+    .clips-grid {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .clip-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .clip-type {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .clip-type.goal { background: #00ff88; color: #0f1923; }
+    .clip-type.opp-goal { background: #ff0050; color: #fff; }
+    .clip-type.chance { background: #ffa502; color: #0f1923; }
+    .clip-type.save { background: #00d4ff; color: #0f1923; }
+    .clip-type.skills { background: #ff6b6b; color: #0f1923; }
+    .clip-type.celebration { background: #ffd700; color: #0f1923; }
+    
+    .clip-info { flex: 1; }
+    .clip-info .main { font-weight: 600; }
+    .clip-info .sub { color: #8899a6; font-size: 0.9rem; }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; color: #8899a6; margin-bottom: 8px; }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 1rem;
+    }
+    
+    .form-group select {
+      background: #1a2a3a;
+      cursor: pointer;
+    }
+    
+    .form-group select option {
+      background: #1a2a3a;
+      color: #fff;
+      padding: 10px;
+    }
+    
+    .score-input {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      justify-content: center;
+      padding: 30px 0;
+    }
+    
+    .score-input input {
+      width: 120px;
+      height: 120px;
+      text-align: center;
+      font-size: 4rem;
+      font-weight: 800;
+      border-radius: 15px;
+      border: 4px solid #00ff88;
+      background: rgba(0,255,136,0.1);
+    }
+    
+    .score-input input:focus {
+      outline: none;
+      border-color: #00d4ff;
+      background: rgba(0,212,255,0.15);
+    }
+    
+    .score-input .vs {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn:hover { transform: scale(1.02); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    
+    .btn-primary { background: linear-gradient(90deg, #00ff88, #00d4ff); color: #0f1923; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 15px; }
+    
+    .price-note {
+      text-align: center;
+      color: #8899a6;
+      margin-top: 15px;
+    }
+    
+    .price-note .price { color: #00ff88; font-weight: 700; font-size: 1.2rem; }
+    
+    #status {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    #status.show { display: block; }
+    #status.success { background: rgba(0,255,136,0.2); }
+    #status.error { background: rgba(255,71,87,0.2); }
+    #status.processing { background: rgba(0,212,255,0.2); }
+    
+    .no-clips {
+      text-align: center;
+      padding: 40px;
+      color: #8899a6;
+    }
+    
+    .no-clips .icon { font-size: 3rem; margin-bottom: 15px; }
+    
+    .team-of-day {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .player-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    
+    .player-checkbox:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .player-checkbox.selected {
+      background: rgba(0,255,136,0.2);
+      border-color: #00ff88;
+    }
+    
+    .player-checkbox input {
+      display: none;
+    }
+    
+    .player-checkbox .check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .player-checkbox.selected .check {
+      background: #00ff88;
+      border-color: #00ff88;
+      color: #0f1923;
+    }
+    
+    .photo-upload {
+      cursor: pointer;
+    }
+    
+    .photo-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 3px dashed rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    
+    .photo-preview:hover {
+      border-color: #00ff88;
+    }
+    
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .photo-preview .placeholder {
+      color: #8899a6;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">⚽ Match<span>Reel</span></h1>
+      <p style="color: #8899a6; margin-top: 10px;">Admin Dashboard</p>
+    </div>
+    
+    <div class="match-header">
+      <h2><span id="teamName">Loading...</span> <span class="vs">vs</span> <span id="opponent"></span></h2>
+      <div id="matchDate" style="color: #8899a6;"></div>
+      
+      <div class="share-box">
+        <label>Share this link with parents:</label>
+        <div class="share-link">
+          <input type="text" id="shareUrl" readonly>
+          <button onclick="copyLink()">📋 Copy</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="number" id="totalClips">0</div>
+        <div class="label">Total Clips</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="goalCount">0</div>
+        <div class="label">Goals</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="opponentGoals">0</div>
+        <div class="label">Opp Goals</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="saveCount">0</div>
+        <div class="label">Saves</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="skillsCount">0</div>
+        <div class="label">Skills</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="celebrationCount">0</div>
+        <div class="label">Celebrations</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>📹 Uploaded Clips</h3>
+      <div class="clips-grid" id="clipsGrid">
+        <div class="no-clips">
+          <div class="icon">📭</div>
+          <p>No clips uploaded yet. Share the link with parents!</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>📊 Final Score</h3>
+      <div class="score-input">
+        <input type="number" id="homeScore" placeholder="0" min="0">
+        <span class="vs">-</span>
+        <input type="number" id="awayScore" placeholder="0" min="0">
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>🎵 Background Music</h3>
+      <p style="color:#8899a6; margin-bottom:15px;">Search for free music or upload your own MP3</p>
+      
+      <!-- Music Search -->
+      <div style="margin-bottom:20px;">
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+          <input type="text" id="musicSearchInput" placeholder="Search for music (e.g. epic, energetic, sports)" style="flex:1; padding:12px 15px; border-radius:10px; border:2px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); color:#fff;">
+          <button onclick="searchMusic()" style="padding:12px 25px; border-radius:10px; border:none; background:#00d4ff; color:#0f1923; font-weight:600; cursor:pointer;">🔍 Search</button>
+        </div>
+        
+        <!-- Quick picks -->
+        <div style="margin-bottom:15px;">
+          <span style="color:#8899a6; font-size:0.85rem;">Quick picks: </span>
+          <button onclick="searchMusic('epic sports')" class="quick-pick">⚡ Epic Sports</button>
+          <button onclick="searchMusic('energetic')" class="quick-pick">🔥 Energetic</button>
+          <button onclick="searchMusic('victory celebration')" class="quick-pick">🏆 Victory</button>
+          <button onclick="searchMusic('hip hop beat')" class="quick-pick">🎤 Hip Hop</button>
+        </div>
+        
+        <!-- Search Results -->
+        <div id="musicResults" style="display:none; max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:10px; padding:10px;"></div>
+      </div>
+      
+      <!-- Or upload -->
+      <div style="display:flex; gap:10px; align-items:center; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
+        <input type="file" id="musicFile" accept="audio/mp3,audio/mpeg" style="display:none;" onchange="handleMusicUpload(this)">
+        <button onclick="document.getElementById('musicFile').click()" style="padding:15px 25px; border-radius:10px; border:2px dashed rgba(255,255,255,0.3); background:transparent; color:#8899a6; cursor:pointer;">📁 Or Upload MP3</button>
+      </div>
+      <div id="selectedMusic" style="margin-top:15px; padding:15px; background:rgba(0,255,136,0.1); border-radius:10px; display:none;">
+        <span style="color:#00ff88;">✓ Selected:</span> <span id="selectedMusicName"></span>
+        <button onclick="clearMusic()" style="float:right; background:none; border:none; color:#ff4757; cursor:pointer;">✕ Remove</button>
+      </div>
+    </div>
+    
+    <style>
+      .quick-pick {
+        padding: 6px 12px;
+        border-radius: 15px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: transparent;
+        color: #8899a6;
+        font-size: 0.8rem;
+        cursor: pointer;
+        margin: 2px;
+        transition: all 0.2s;
+      }
+      .quick-pick:hover {
+        background: rgba(0,212,255,0.2);
+        border-color: #00d4ff;
+        color: #fff;
+      }
+      .music-result {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .music-result:hover {
+        background: rgba(0,255,136,0.1);
+      }
+      .music-result.selected {
+        background: rgba(0,255,136,0.2);
+        border: 1px solid #00ff88;
+      }
+      .music-result audio {
+        height: 32px;
+      }
+    </style>
+    
+    <div class="section">
+      <h3>📸 Team Photo</h3>
+      <p style="color: #8899a6; margin-bottom: 15px;">Upload a squad photo for the intro slide</p>
+      <div class="photo-upload" id="teamPhotoUpload" style="cursor:pointer;">
+        <div class="photo-preview" id="teamPhotoPreview" style="width: 280px; height: 180px; border-radius: 12px;">
+          <span class="placeholder">👥 Tap to add team photo</span>
+        </div>
+        <input type="file" id="teamPhotoInput" accept="image/*" style="display:none;">
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>👥 Squad</h3>
+      <div id="squadList" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px;"></div>
+      <div style="margin-top: 15px;">
+        <button class="add-player-btn" onclick="showAddPlayerAdmin()" style="padding: 10px 20px; border-radius: 20px; border: 2px dashed rgba(255,255,255,0.3); background: transparent; color: #8899a6; cursor: pointer;">+ Add Player</button>
+        <div id="addPlayerAdminInput" style="display: none; margin-top: 10px;">
+          <input type="text" id="newPlayerAdmin" placeholder="Player name" style="padding: 10px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; margin-right: 10px;">
+          <button onclick="addPlayerAdmin()" style="padding: 10px 20px; border-radius: 8px; border: none; background: #00ff88; color: #0f1923; font-weight: 600; cursor: pointer;">Add</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>⭐ Player of the Match</h3>
+      <div class="form-group">
+        <select id="playerOfMatch">
+          <option value="">Select player...</option>
+        </select>
+      </div>
+      
+      <div class="form-group" id="potmPhotoSection" style="display:none;">
+        <label>Upload their photo (close-up shot)</label>
+        <div class="photo-upload" id="potmPhotoUpload">
+          <div class="photo-preview" id="potmPhotoPreview">
+            <span class="placeholder">📸 Tap to add photo</span>
+          </div>
+          <input type="file" id="potmPhotoInput" accept="image/*" style="display:none;">
+        </div>
+        <p style="color: #8899a6; font-size: 0.85rem; margin-top: 8px;">This photo will be featured in the highlight reel</p>
+      </div>
+    </div>
+    
+    <!-- Main CTA Button -->
+    <div id="mainCTA">
+      <button class="btn btn-primary" onclick="shareToGroup()" style="font-size: 1.4rem; padding: 25px; margin-top: 20px;">
+        📤 Share to WhatsApp Group
+      </button>
+      <p class="price-note" style="margin-top: 15px;">
+        Video generates automatically when someone pays £3
+      </p>
+    </div>
+    
+    <!-- Excitement Poster (shown while generating) -->
+    <div id="excitementPoster" style="display:none; margin-top: 20px;">
+      <div style="background: linear-gradient(135deg, #1a2a3a 0%, #0f1923 100%); border: 3px solid #00ff88; border-radius: 20px; padding: 30px; text-align: center;">
+        <h2 style="color: #00ff88; font-size: 1.8rem; margin-bottom: 20px;">🎬 Creating Your Highlights!</h2>
+        
+        <div style="display: flex; justify-content: center; gap: 30px; margin: 30px 0;">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem;">⚽</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #00ff88;" id="posterGoals">0</div>
+            <div style="color: #8899a6;">Goals</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem;">🎯</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #00d4ff;" id="posterChances">0</div>
+            <div style="color: #8899a6;">Chances</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem;">🧤</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #ffa502;" id="posterSaves">0</div>
+            <div style="color: #8899a6;">Saves</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 3rem;">🔥</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #ff6b6b;" id="posterSkills">0</div>
+            <div style="color: #8899a6;">Skills</div>
+          </div>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 12px; margin-top: 20px;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <div class="spinner" style="width: 30px; height: 30px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #00ff88; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="font-size: 1.2rem; color: #00ff88;">Processing clips...</span>
+          </div>
+          <p style="color: #8899a6; margin-top: 10px; font-size: 0.9rem;">This usually takes 2-5 minutes</p>
+        </div>
+      </div>
+      
+      <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+      </style>
+    </div>
+    
+    <!-- Share Section (shown when complete) -->
+    <div id="shareSection" style="display:none; margin-top: 20px;">
+      <div style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,212,255,0.1) 100%); border: 3px solid #00ff88; border-radius: 20px; padding: 30px; text-align: center;">
+        <h2 style="color: #00ff88; font-size: 1.8rem; margin-bottom: 10px;">🎉 Video Ready!</h2>
+        <p style="color: #8899a6; margin-bottom: 25px;">Share this link in your WhatsApp group:</p>
+        
+        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <input type="text" id="reelShareUrl" readonly style="width: 100%; padding: 15px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; font-family: monospace; font-size: 0.9rem; text-align: center;">
+        </div>
+        
+        <button onclick="copyReelLink()" style="width: 100%; padding: 18px; border-radius: 12px; border: none; background: linear-gradient(90deg, #00ff88, #00d4ff); color: #0f1923; font-size: 1.2rem; font-weight: 700; cursor: pointer;">
+          📋 Copy Link for WhatsApp
+        </button>
+        
+        <a id="downloadLink" href="#" style="display: block; width: 100%; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; text-align: center; font-weight: 600; margin-top: 15px;">
+          ⬇️ Download Video
+        </a>
+      </div>
+    </div>
+    
+    <div id="status"></div>
+  </div>
+  
+  <script>
+    const matchId = window.location.pathname.split('/')[2];
+    const urlParams = new URLSearchParams(window.location.search);
+    const adminToken = urlParams.get('token');
+    
+    let matchData = null;
+    
+    async function loadMatch() {
+      try {
+        const res = await fetch(`/api/matches/${matchId}`);
+        const data = await res.json();
+        
+        if (data.success) {
+          matchData = data.match;
+          renderMatch();
+        } else {
+          showStatus('Match not found', 'error');
+        }
+      } catch (err) {
+        showStatus('Failed to load match: ' + err.message, 'error');
+      }
+    }
+    
+    function renderMatch() {
+      document.getElementById('teamName').textContent = matchData.teamName;
+      document.getElementById('opponent').textContent = matchData.opponent;
+      document.getElementById('matchDate').textContent = formatDate(matchData.matchDate);
+      document.getElementById('shareUrl').value = `${window.location.origin}/match/${matchId}`;
+      
+      // Stats
+      const clips = matchData.clips || [];
+      document.getElementById('totalClips').textContent = clips.length;
+      document.getElementById('goalCount').textContent = clips.filter(c => c.type === 'goal').length;
+      document.getElementById('opponentGoals').textContent = clips.filter(c => c.type === 'opp-goal').length;
+      document.getElementById('saveCount').textContent = clips.filter(c => c.type === 'save').length;
+      document.getElementById('skillsCount').textContent = clips.filter(c => c.type === 'skills').length;
+      document.getElementById('celebrationCount').textContent = clips.filter(c => c.type === 'celebration').length;
+      
+      // Clips list
+      const grid = document.getElementById('clipsGrid');
+      if (clips.length === 0) {
+        grid.innerHTML = `
+          <div class="no-clips">
+            <div class="icon">📭</div>
+            <p>No clips uploaded yet. Share the link with parents!</p>
+          </div>
+        `;
+      } else {
+        // Sort: goals first (by minute), then opp-goals, then celebrations, then skills, then saves, then chances
+        const sorted = [...clips].sort((a, b) => {
+          const order = { goal: 0, 'opp-goal': 1, celebration: 2, skills: 3, save: 4, chance: 5 };
+          if (order[a.type] !== order[b.type]) return order[a.type] - order[b.type];
+          if (a.type === 'goal' && a.minute && b.minute) return a.minute - b.minute;
+          return 0;
+        });
+        
+        const typeLabels = {
+          'opp-goal': 'OPP GOAL',
+          'celebration': 'CELEBRATION'
+        };
+        
+        grid.innerHTML = sorted.map(clip => `
+          <div class="clip-row">
+            <span class="clip-type ${clip.type}">${typeLabels[clip.type] || clip.type.toUpperCase()}</span>
+            <div class="clip-info">
+              <div class="main">${clip.type === 'goal' ? `${clip.scorer || 'Goal'}${clip.minute && clip.minute !== 'null' ? ` (${clip.minute}')` : ''}` : clip.type === 'chance' ? `${clip.scorer || 'Big Chance'}` : clip.type === 'opp-goal' ? 'Opponent Goal' : clip.type === 'celebration' ? 'Team Celebration' : clip.originalName}</div>
+              <div class="sub">${new Date(clip.uploadedAt).toLocaleTimeString()}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Score
+      if (matchData.score) {
+        document.getElementById('homeScore').value = matchData.score.home;
+        document.getElementById('awayScore').value = matchData.score.away;
+      }
+      
+      // Player of match dropdown
+      const potmSelect = document.getElementById('playerOfMatch');
+      potmSelect.innerHTML = '<option value="">Select player...</option>' +
+        matchData.squad.map(p => `<option value="${p}" ${matchData.playerOfMatch === p ? 'selected' : ''}>${p}</option>`).join('');
+      
+      // Squad list (display only)
+      const squadContainer = document.getElementById('squadList');
+      squadContainer.innerHTML = matchData.squad.map(p => `
+        <span style="background:rgba(255,255,255,0.1); padding:8px 15px; border-radius:20px;">${p}</span>
+      `).join('');
+      
+      // Check if video already complete - show share section
+      if (matchData.status === 'complete' && matchData.reelFilename) {
+        document.getElementById('mainCTA').style.display = 'none';
+        document.getElementById('shareSection').style.display = 'block';
+        document.getElementById('reelShareUrl').value = `${window.location.origin}/reel/${matchId}`;
+        document.getElementById('downloadLink').href = `/api/matches/${matchId}/download`;
+      } else if (matchData.status === 'processing') {
+        // Show excitement poster if processing
+        document.getElementById('mainCTA').style.display = 'none';
+        document.getElementById('excitementPoster').style.display = 'block';
+        const clips = matchData.clips || [];
+        document.getElementById('posterGoals').textContent = clips.filter(c => c.type === 'goal').length;
+        document.getElementById('posterChances').textContent = clips.filter(c => c.type === 'chance').length;
+        document.getElementById('posterSaves').textContent = clips.filter(c => c.type === 'save').length;
+        document.getElementById('posterSkills').textContent = clips.filter(c => c.type === 'skills').length;
+        pollForCompletionWithShare();
+      }
+    }
+    
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
+    }
+    
+    function copyLink() {
+      const input = document.getElementById('shareUrl');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      event.target.textContent = '✓';
+      setTimeout(() => event.target.textContent = '📋 Copy', 2000);
+    }
+    
+    let teamOfDay = [];
+    
+    function toggleTOD(el, player) {
+      const index = teamOfDay.indexOf(player);
+      if (index > -1) {
+        // Deselect
+        teamOfDay.splice(index, 1);
+        el.classList.remove('selected');
+        el.querySelector('.check').textContent = '';
+      } else {
+        // Allow up to 14 selections
+        if (teamOfDay.length >= 14) {
+          showStatus('Maximum 14 players', 'error');
+          return;
+        }
+        teamOfDay.push(player);
+        el.classList.add('selected');
+        el.querySelector('.check').textContent = '✓';
+      }
+    }
+    
+    function showAddPlayerAdmin() {
+      const input = document.getElementById('addPlayerAdminInput');
+      input.style.display = input.style.display === 'none' ? 'block' : 'none';
+      if (input.style.display === 'block') {
+        document.getElementById('newPlayerAdmin').focus();
+      }
+    }
+    
+    async function addPlayerAdmin() {
+      const input = document.getElementById('newPlayerAdmin');
+      const name = input.value.trim();
+      if (!name) return;
+      
+      // Add to squad on server
+      try {
+        const res = await fetch(`/api/matches/${matchId}/squad`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ player: name })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          matchData.squad = data.squad;
+          input.value = '';
+          document.getElementById('addPlayerAdminInput').style.display = 'none';
+          renderMatch(); // Re-render to show new player
+          showStatus(`✓ Added ${name}`, 'success');
+        }
+      } catch (err) {
+        showStatus('Failed to add player', 'error');
+      }
+    }
+    
+    // Allow Enter key to add player
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && e.target.id === 'newPlayerAdmin') {
+        addPlayerAdmin();
+      }
+    });
+    
+    async function saveDetails() {
+      const homeScore = document.getElementById('homeScore').value;
+      const awayScore = document.getElementById('awayScore').value;
+      const playerOfMatch = document.getElementById('playerOfMatch').value;
+      
+      try {
+        // Upload music if selected (file upload)
+        if (musicFile) {
+          const musicData = new FormData();
+          musicData.append('music', musicFile);
+          musicData.append('adminToken', adminToken);
+          
+          await fetch(`/api/matches/${matchId}/music`, {
+            method: 'POST',
+            body: musicData
+          });
+          musicFile = null;
+          selectedMusicUrl = null; // Clear URL if we uploaded a file
+        }
+        
+        // Or save preset music URL
+        if (selectedMusicUrl) {
+          await fetch(`/api/matches/${matchId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              adminToken,
+              musicUrl: selectedMusicUrl,
+              musicTitle: document.getElementById('selectedMusicName')?.textContent || 'Preset track'
+            })
+          });
+        }
+        
+        // Upload team photo if selected
+        if (teamPhoto) {
+          const teamPhotoData = new FormData();
+          teamPhotoData.append('photo', teamPhoto);
+          teamPhotoData.append('adminToken', adminToken);
+          
+          await fetch(`/api/matches/${matchId}/team-photo`, {
+            method: 'POST',
+            body: teamPhotoData
+          });
+          teamPhoto = null; // Clear so we don't re-upload
+        }
+        
+        // Upload POTM photo if selected
+        if (potmPhoto && playerOfMatch) {
+          const photoData = new FormData();
+          photoData.append('photo', potmPhoto);
+          photoData.append('adminToken', adminToken);
+          
+          await fetch(`/api/matches/${matchId}/potm-photo`, {
+            method: 'POST',
+            body: photoData
+          });
+        }
+        
+        const res = await fetch(`/api/matches/${matchId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            adminToken,
+            score: homeScore && awayScore ? { home: parseInt(homeScore), away: parseInt(awayScore) } : null,
+            playerOfMatch: playerOfMatch || null
+          })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          showStatus('✓ Details saved!', 'success');
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showStatus('Error: ' + err.message, 'error');
+      }
+    }
+    
+    async function generatePoster() {
+      await saveDetails();
+      showStatus('🖼️ Generating match poster...', 'processing');
+      
+      try {
+        const res = await fetch(`/api/matches/${matchId}/poster`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminToken })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          showStatus('✅ Poster ready!', 'success');
+          window.open(`/api/matches/${matchId}/poster/download`, '_blank');
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showStatus('Error: ' + err.message, 'error');
+      }
+    }
+    
+    async function generateVertical() {
+      await saveDetails();
+      showStatus('📱 Generating vertical video for Instagram/TikTok... This may take a few minutes', 'processing');
+      
+      try {
+        const res = await fetch(`/api/matches/${matchId}/generate-vertical`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminToken })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          showStatus('⏳ Vertical video processing started! Check back in a few minutes.', 'success');
+          pollForVertical();
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showStatus('Error: ' + err.message, 'error');
+      }
+    }
+    
+    function pollForVertical() {
+      const checkStatus = async () => {
+        try {
+          const res = await fetch(`/api/matches/${matchId}/status`);
+          const data = await res.json();
+          
+          if (data.verticalReelFilename) {
+            showStatus('✅ Vertical video ready!', 'success');
+            return;
+          }
+          setTimeout(checkStatus, 5000);
+        } catch (err) {
+          setTimeout(checkStatus, 5000);
+        }
+      };
+      setTimeout(checkStatus, 5000);
+    }
+    
+    // Main CTA - Share to Group (no generation until payment)
+    async function shareToGroup() {
+      const clips = matchData.clips || [];
+      if (clips.length === 0) {
+        showStatus('No clips uploaded yet! Share the upload link with parents first.', 'error');
+        return;
+      }
+      
+      // Save details first
+      await saveDetails();
+      
+      // Mark as ready to share
+      try {
+        await fetch(`/api/matches/${matchId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminToken, status: 'ready' })
+        });
+      } catch (err) {
+        console.error('Failed to update status:', err);
+      }
+      
+      // Show share section with stats
+      document.getElementById('mainCTA').style.display = 'none';
+      document.getElementById('shareSection').style.display = 'block';
+      document.getElementById('reelShareUrl').value = `${window.location.origin}/reel/${matchId}`;
+      
+      // Update poster stats in share section
+      const statsHtml = `
+        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+          <div style="text-align: center;">
+            <div style="font-size: 2rem;">⚽</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #00ff88;">${clips.filter(c => c.type === 'goal').length}</div>
+            <div style="font-size: 0.8rem; color: #8899a6;">Goals</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem;">🎯</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #00d4ff;">${clips.filter(c => c.type === 'chance').length}</div>
+            <div style="font-size: 0.8rem; color: #8899a6;">Chances</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem;">🔥</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #ff6b6b;">${clips.filter(c => c.type === 'skills').length}</div>
+            <div style="font-size: 0.8rem; color: #8899a6;">Skills</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('shareSection').querySelector('h2').insertAdjacentHTML('afterend', statsHtml);
+    }
+    
+    function pollForCompletionWithShare() {
+      const checkStatus = async () => {
+        try {
+          const res = await fetch(`/api/matches/${matchId}/status`);
+          const data = await res.json();
+          
+          if (data.status === 'complete') {
+            // Hide poster, show share section
+            document.getElementById('excitementPoster').style.display = 'none';
+            document.getElementById('shareSection').style.display = 'block';
+            document.getElementById('reelShareUrl').value = `${window.location.origin}/reel/${matchId}`;
+            document.getElementById('downloadLink').href = `/api/matches/${matchId}/download`;
+            return;
+          } else if (data.status === 'failed') {
+            showStatus('❌ Video generation failed: ' + (data.error || 'Unknown error'), 'error');
+            document.getElementById('mainCTA').style.display = 'block';
+            document.getElementById('excitementPoster').style.display = 'none';
+            return;
+          }
+          
+          setTimeout(checkStatus, 5000);
+        } catch (err) {
+          setTimeout(checkStatus, 5000);
+        }
+      };
+      
+      setTimeout(checkStatus, 5000);
+    }
+    
+    async function generatePreview() {
+      const clips = matchData.clips || [];
+      if (clips.length === 0) {
+        showStatus('No clips yet!', 'error');
+        return;
+      }
+      
+      // Save details first
+      await saveDetails();
+      
+      showStatus('🎬 Generating preview... this may take a few minutes', 'processing');
+      
+      try {
+        const res = await fetch(`/api/matches/${matchId}/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminToken })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          showStatus('⏳ Video processing started! Check back in 2-5 minutes.', 'success');
+          // Start polling for completion
+          pollForCompletion();
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showStatus('Error: ' + err.message, 'error');
+      }
+    }
+    
+    function pollForCompletion() {
+      const checkStatus = async () => {
+        try {
+          const res = await fetch(`/api/matches/${matchId}/status`);
+          const data = await res.json();
+          
+          if (data.status === 'complete') {
+            showStatus('✅ Video ready! Click to download.', 'success');
+            document.getElementById('downloadSection').style.display = 'block';
+            document.getElementById('downloadLink').href = `/api/matches/${matchId}/download`;
+            return;
+          } else if (data.status === 'failed') {
+            showStatus('❌ Video generation failed: ' + (data.error || 'Unknown error'), 'error');
+            return;
+          }
+          
+          // Keep polling
+          setTimeout(checkStatus, 5000);
+        } catch (err) {
+          console.error('Poll error:', err);
+          setTimeout(checkStatus, 5000);
+        }
+      };
+      
+      setTimeout(checkStatus, 5000);
+    }
+    
+    async function markReady() {
+      const clips = matchData.clips || [];
+      if (clips.length === 0) {
+        showStatus('No clips yet. Wait for parents to upload!', 'error');
+        return;
+      }
+      
+      const homeScore = document.getElementById('homeScore').value;
+      const awayScore = document.getElementById('awayScore').value;
+      
+      if (!homeScore || !awayScore) {
+        showStatus('Please enter the final score first', 'error');
+        return;
+      }
+      
+      // Save details first
+      await saveDetails();
+      
+      const btn = document.getElementById('readyBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      
+      try {
+        const res = await fetch(`/api/matches/${matchId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            adminToken,
+            status: 'ready'
+          })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          showStatus('✓ Ready! Share the link with your WhatsApp group.', 'success');
+          document.getElementById('shareSection').style.display = 'block';
+          document.getElementById('reelShareUrl').value = `${window.location.origin}/reel/${matchId}`;
+          btn.textContent = '✓ Ready to Share';
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        showStatus('Error: ' + err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '✓ Mark as Ready to Share';
+      }
+    }
+    
+    function copyReelLink() {
+      const input = document.getElementById('reelShareUrl');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      showStatus('✓ Link copied!', 'success');
+    }
+    
+    // Music handling
+    let musicFile = null;
+    
+    function handleMusicUpload(input) {
+      if (input.files && input.files[0]) {
+        musicFile = input.files[0];
+        document.getElementById('selectedMusic').style.display = 'block';
+        document.getElementById('selectedMusicName').textContent = musicFile.name;
+      }
+    }
+    
+    function clearMusic() {
+      musicFile = null;
+      selectedMusicUrl = null;
+      document.getElementById('selectedMusic').style.display = 'none';
+      document.getElementById('musicFile').value = '';
+      document.querySelectorAll('.music-result').forEach(el => el.classList.remove('selected'));
+    }
+    
+    // Music search - opens Pixabay in new tab OR uses preset tracks
+    let selectedMusicUrl = null;
+    
+    // Preset royalty-free tracks (direct links to free music)
+    const presetTracks = {
+      'epic sports': [
+        { name: 'Epic Sports Motivation', url: 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_946b0939c8.mp3', duration: '2:30' },
+        { name: 'Action Sports Rock', url: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_8cb749d484.mp3', duration: '2:15' },
+      ],
+      'energetic': [
+        { name: 'Energetic Rock', url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0c6ff1bab.mp3', duration: '2:20' },
+        { name: 'Powerful Beat', url: 'https://cdn.pixabay.com/download/audio/2021/11/01/audio_5f38f1bf91.mp3', duration: '1:45' },
+      ],
+      'victory celebration': [
+        { name: 'Victory Fanfare', url: 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_756e1c3649.mp3', duration: '1:30' },
+        { name: 'Champions Theme', url: 'https://cdn.pixabay.com/download/audio/2021/08/08/audio_dc39bde808.mp3', duration: '2:00' },
+      ],
+      'hip hop beat': [
+        { name: 'Hip Hop Sport', url: 'https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3', duration: '2:10' },
+        { name: 'Urban Beat', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3', duration: '1:55' },
+      ]
+    };
+    
+    function searchMusic(query) {
+      const searchQuery = query || document.getElementById('musicSearchInput').value.trim();
+      if (!searchQuery) {
+        showStatus('Enter a search term', 'error');
+        return;
+      }
+      
+      const resultsDiv = document.getElementById('musicResults');
+      resultsDiv.style.display = 'block';
+      
+      // Check if we have preset tracks for this query
+      const lowerQuery = searchQuery.toLowerCase();
+      let tracks = presetTracks[lowerQuery];
+      
+      if (!tracks) {
+        // Show link to Pixabay search
+        resultsDiv.innerHTML = `
+          <div style="text-align:center; padding:20px;">
+            <p style="color:#8899a6; margin-bottom:15px;">No preset tracks for "${searchQuery}"</p>
+            <a href="https://pixabay.com/music/search/${encodeURIComponent(searchQuery)}/" target="_blank" 
+               style="display:inline-block; padding:12px 25px; background:#00d4ff; color:#0f1923; border-radius:8px; text-decoration:none; font-weight:600;">
+              🔍 Search on Pixabay →
+            </a>
+            <p style="color:#666; font-size:0.8rem; margin-top:10px;">Download MP3 from Pixabay, then upload it above</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Show preset tracks
+      resultsDiv.innerHTML = tracks.map((track, i) => `
+        <div class="music-result" onclick="selectTrack(${i}, '${lowerQuery}')" data-index="${i}">
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#fff;">${track.name}</div>
+            <div style="font-size:0.8rem; color:#8899a6;">${track.duration}</div>
+          </div>
+          <audio controls src="${track.url}" style="height:32px;"></audio>
+          <button onclick="event.stopPropagation(); selectTrack(${i}, '${lowerQuery}')" 
+                  style="padding:8px 15px; border-radius:6px; border:none; background:#00ff88; color:#0f1923; font-weight:600; cursor:pointer;">
+            Use
+          </button>
+        </div>
+      `).join('') + `
+        <div style="text-align:center; padding:15px; border-top:1px solid rgba(255,255,255,0.1); margin-top:10px;">
+          <a href="https://pixabay.com/music/search/${encodeURIComponent(searchQuery)}/" target="_blank" 
+             style="color:#00d4ff; text-decoration:none; font-size:0.9rem;">
+            🔍 More options on Pixabay →
+          </a>
+        </div>
+      `;
+    }
+    
+    function selectTrack(index, category) {
+      const track = presetTracks[category][index];
+      selectedMusicUrl = track.url;
+      musicFile = null; // Clear any uploaded file
+      
+      document.querySelectorAll('.music-result').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.music-result[data-index="${index}"]`).classList.add('selected');
+      
+      document.getElementById('selectedMusic').style.display = 'block';
+      document.getElementById('selectedMusicName').textContent = track.name + ' (preset)';
+      
+      showStatus('✓ Music selected: ' + track.name, 'success');
+    }
+    
+    // Allow Enter key to search
+    document.getElementById('musicSearchInput')?.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') searchMusic();
+    });
+    
+    // Team photo handling
+    let teamPhoto = null;
+    
+    document.getElementById('teamPhotoUpload').addEventListener('click', function() {
+      document.getElementById('teamPhotoInput').click();
+    });
+    
+    document.getElementById('teamPhotoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        teamPhoto = file;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('teamPhotoPreview').innerHTML = `<img src="${e.target.result}" alt="Team" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // POTM photo handling
+    let potmPhoto = null;
+    
+    document.getElementById('playerOfMatch').addEventListener('change', function() {
+      const photoSection = document.getElementById('potmPhotoSection');
+      if (this.value) {
+        photoSection.style.display = 'block';
+      } else {
+        photoSection.style.display = 'none';
+      }
+    });
+    
+    document.getElementById('potmPhotoUpload').addEventListener('click', function() {
+      document.getElementById('potmPhotoInput').click();
+    });
+    
+    document.getElementById('potmPhotoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        potmPhoto = file;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('potmPhotoPreview').innerHTML = `<img src="${e.target.result}" alt="POTM">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'show ' + type;
+    }
+    
+    // Check for admin token
+    if (!adminToken) {
+      document.body.innerHTML = '<div style="text-align:center;padding:100px;"><h2>Access Denied</h2><p>Admin token required</p></div>';
+    } else {
+      loadMatch();
+      // Refresh every 30 seconds to see new clips
+      setInterval(loadMatch, 30000);
+    }
+  </script>
+</body>
+</html>

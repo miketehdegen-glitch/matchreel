@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: transparent;
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Pink/red radial burst */
+    .burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(255,0,80,0.3) 0%, rgba(255,0,80,0.1) 35%, transparent 55%);
+      border-radius: 50%;
+    }
+    
+    /* Sparkle lines */
+    .sparkle-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    
+    .sparkle-line {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,100,150,0.8), rgba(255,0,80,0.9), transparent);
+    }
+    
+    .sparkle-line:nth-child(1) { top: 25%; left: -5%; width: 30%; transform: rotate(-3deg); }
+    .sparkle-line:nth-child(2) { top: 35%; right: -8%; width: 35%; transform: rotate(6deg); }
+    .sparkle-line:nth-child(3) { top: 60%; left: -8%; width: 28%; transform: rotate(5deg); }
+    .sparkle-line:nth-child(4) { top: 72%; right: -5%; width: 32%; transform: rotate(-8deg); }
+    
+    /* Sparkles/stars */
+    .sparkle {
+      position: absolute;
+      font-size: 50px;
+      color: #fff;
+      text-shadow: 0 0 20px #ff0050, 0 0 40px #ff0050, 0 0 60px rgba(255,0,80,0.6);
+    }
+    
+    .sparkle-1 { top: 12%; left: 10%; font-size: 60px; }
+    .sparkle-2 { top: 15%; right: 12%; font-size: 45px; }
+    .sparkle-3 { bottom: 18%; left: 15%; font-size: 40px; }
+    .sparkle-4 { bottom: 15%; right: 10%; font-size: 55px; }
+    .sparkle-5 { top: 40%; left: 5%; font-size: 35px; }
+    .sparkle-6 { top: 50%; right: 8%; font-size: 38px; }
+    
+    /* Fire emoji accents */
+    .fire {
+      position: absolute;
+      font-size: 70px;
+      filter: drop-shadow(0 0 20px rgba(255,100,50,0.8));
+    }
+    
+    .fire-1 { top: 20%; left: 20%; transform: rotate(-15deg); }
+    .fire-2 { top: 18%; right: 22%; transform: rotate(10deg); }
+    .fire-3 { bottom: 22%; left: 25%; transform: rotate(20deg); font-size: 55px; }
+    .fire-4 { bottom: 25%; right: 20%; transform: rotate(-12deg); font-size: 60px; }
+    
+    /* Main text */
+    .skills-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-2deg);
+      text-align: center;
+    }
+    
+    .skills-text {
+      font-size: 160px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 12px;
+      color: #fff;
+      text-shadow: 
+        0 0 30px #ff0050,
+        0 0 60px #ff0050,
+        0 0 90px rgba(255,0,80,0.7),
+        6px 6px 0 #800028,
+        10px 10px 0 rgba(0,0,0,0.4);
+      -webkit-text-stroke: 2px #ff3366;
+    }
+    
+    .sub-text {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: 25px;
+      color: #ff6699;
+      text-shadow: 
+        0 0 15px #ff0050,
+        3px 3px 0 rgba(0,0,0,0.5);
+      margin-top: 5px;
+    }
+    
+    /* Lower badge */
+    .lower-third {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .skills-badge {
+      background: linear-gradient(135deg, #ff0050, #cc0040);
+      padding: 15px 35px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #fff;
+      box-shadow: 0 4px 40px rgba(255, 0, 80, 0.7);
+      clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="burst"></div>
+  
+  <div class="sparkle-lines">
+    <div class="sparkle-line"></div>
+    <div class="sparkle-line"></div>
+    <div class="sparkle-line"></div>
+    <div class="sparkle-line"></div>
+  </div>
+  
+  <div class="sparkle sparkle-1">✨</div>
+  <div class="sparkle sparkle-2">✨</div>
+  <div class="sparkle sparkle-3">✨</div>
+  <div class="sparkle sparkle-4">✨</div>
+  <div class="sparkle sparkle-5">✨</div>
+  <div class="sparkle sparkle-6">✨</div>
+  
+  <div class="fire fire-1">🔥</div>
+  <div class="fire fire-2">🔥</div>
+  <div class="fire fire-3">🔥</div>
+  <div class="fire fire-4">🔥</div>
+  
+  <div class="skills-container">
+    <div class="skills-text">SKILLS!</div>
+    <div class="sub-text">TEKKERS</div>
+  </div>
+  
+  <div class="lower-third">
+    <div class="skills-badge">🔥 FILTHY</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+node_modules/
+.env
+
+# Data files (but keep directories)
+data/matches.json
+data/vouchers.json
+uploads/*
+output/*
+!**/.gitkeep
+
+*.log
+.DS_Store

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1280px;
+      height: 720px;
+      background: transparent;
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Golden radial burst */
+    .burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1000px;
+      height: 1000px;
+      background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,180,0,0.15) 30%, transparent 55%);
+      border-radius: 50%;
+    }
+    
+    /* Confetti/streamers effect */
+    .confetti {
+      position: absolute;
+      font-size: 40px;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+    }
+    
+    .confetti-1 { top: 5%; left: 8%; transform: rotate(15deg); }
+    .confetti-2 { top: 8%; left: 25%; transform: rotate(-20deg); }
+    .confetti-3 { top: 3%; left: 45%; transform: rotate(10deg); }
+    .confetti-4 { top: 6%; left: 65%; transform: rotate(-15deg); }
+    .confetti-5 { top: 4%; left: 85%; transform: rotate(25deg); }
+    .confetti-6 { top: 12%; right: 5%; transform: rotate(-10deg); }
+    .confetti-7 { bottom: 8%; left: 10%; transform: rotate(20deg); }
+    .confetti-8 { bottom: 5%; left: 30%; transform: rotate(-25deg); }
+    .confetti-9 { bottom: 10%; right: 25%; transform: rotate(15deg); }
+    .confetti-10 { bottom: 6%; right: 8%; transform: rotate(-20deg); }
+    
+    /* Trophy icons */
+    .trophy {
+      position: absolute;
+      font-size: 80px;
+      filter: drop-shadow(0 0 30px rgba(255,215,0,0.8));
+    }
+    
+    .trophy-1 { top: 15%; left: 10%; transform: rotate(-10deg); }
+    .trophy-2 { top: 12%; right: 12%; transform: rotate(15deg); }
+    
+    /* Stars scattered */
+    .star {
+      position: absolute;
+      font-size: 50px;
+      color: #ffd700;
+      text-shadow: 0 0 20px #ffd700, 0 0 40px #ffa500;
+    }
+    
+    .star-1 { top: 20%; left: 20%; font-size: 60px; }
+    .star-2 { top: 25%; right: 18%; font-size: 45px; }
+    .star-3 { bottom: 25%; left: 15%; font-size: 55px; }
+    .star-4 { bottom: 20%; right: 20%; font-size: 50px; }
+    .star-5 { top: 35%; left: 8%; font-size: 35px; }
+    .star-6 { top: 40%; right: 10%; font-size: 40px; }
+    
+    /* Party poppers */
+    .popper {
+      position: absolute;
+      font-size: 70px;
+      filter: drop-shadow(0 0 15px rgba(255,100,150,0.6));
+    }
+    
+    .popper-1 { top: 30%; left: 5%; transform: rotate(-30deg); }
+    .popper-2 { top: 28%; right: 8%; transform: rotate(30deg) scaleX(-1); }
+    .popper-3 { bottom: 30%; left: 8%; transform: rotate(-45deg); }
+    .popper-4 { bottom: 28%; right: 5%; transform: rotate(45deg) scaleX(-1); }
+    
+    /* Speed/energy lines */
+    .energy-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    
+    .energy-line {
+      position: absolute;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(255,215,0,0.8), rgba(255,180,0,0.9), transparent);
+    }
+    
+    .energy-line:nth-child(1) { top: 18%; left: -10%; width: 35%; transform: rotate(-5deg); }
+    .energy-line:nth-child(2) { top: 28%; right: -10%; width: 40%; transform: rotate(6deg); }
+    .energy-line:nth-child(3) { top: 68%; left: -8%; width: 32%; transform: rotate(8deg); }
+    .energy-line:nth-child(4) { top: 78%; right: -5%; width: 38%; transform: rotate(-7deg); }
+    
+    /* Main text */
+    .celebration-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-2deg);
+      text-align: center;
+    }
+    
+    .main-text {
+      font-size: 150px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      color: #fff;
+      text-shadow: 
+        0 0 30px #ffd700,
+        0 0 60px #ffa500,
+        0 0 100px rgba(255,180,0,0.7),
+        6px 6px 0 #b8860b,
+        10px 10px 0 rgba(0,0,0,0.4);
+      -webkit-text-stroke: 3px #ffd700;
+    }
+    
+    .sub-text {
+      font-size: 80px;
+      font-weight: 800;
+      letter-spacing: 20px;
+      color: #ffd700;
+      text-shadow: 
+        0 0 25px #ffa500,
+        0 0 50px rgba(255,180,0,0.6),
+        4px 4px 0 rgba(0,0,0,0.5);
+      margin-top: -10px;
+    }
+    
+    /* Lower badge */
+    .lower-third {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .celebration-badge {
+      background: linear-gradient(135deg, #ffd700, #ffa500, #ffd700);
+      padding: 18px 45px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #000;
+      box-shadow: 0 4px 50px rgba(255, 215, 0, 0.8);
+      clip-path: polygon(2% 0, 98% 0, 100% 100%, 0 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="burst"></div>
+  
+  <div class="energy-lines">
+    <div class="energy-line"></div>
+    <div class="energy-line"></div>
+    <div class="energy-line"></div>
+    <div class="energy-line"></div>
+  </div>
+  
+  <div class="confetti confetti-1">🎊</div>
+  <div class="confetti confetti-2">🎉</div>
+  <div class="confetti confetti-3">🎊</div>
+  <div class="confetti confetti-4">🎉</div>
+  <div class="confetti confetti-5">🎊</div>
+  <div class="confetti confetti-6">🎉</div>
+  <div class="confetti confetti-7">🎊</div>
+  <div class="confetti confetti-8">🎉</div>
+  <div class="confetti confetti-9">🎊</div>
+  <div class="confetti confetti-10">🎉</div>
+  
+  <div class="trophy trophy-1">🏆</div>
+  <div class="trophy trophy-2">🏆</div>
+  
+  <div class="popper popper-1">🎉</div>
+  <div class="popper popper-2">🎉</div>
+  <div class="popper popper-3">🎉</div>
+  <div class="popper popper-4">🎉</div>
+  
+  <div class="star star-1">⭐</div>
+  <div class="star star-2">⭐</div>
+  <div class="star star-3">⭐</div>
+  <div class="star star-4">⭐</div>
+  <div class="star star-5">⭐</div>
+  <div class="star star-6">⭐</div>
+  
+  <div class="celebration-container">
+    <div class="main-text">GET IN!</div>
+    <div class="sub-text">SCENES!</div>
+  </div>
+  
+  <div class="lower-third">
+    <div class="celebration-badge">🎉 LIMBS 🎉</div>
+  </div>
+</body>
+</html>

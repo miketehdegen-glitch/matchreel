@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: transparent;
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Clean lower third banner */
+    .lower-third {
+      position: absolute;
+      bottom: 60px;
+      left: 40px;
+      display: flex;
+      align-items: stretch;
+    }
+    
+    .goal-badge {
+      background: {{PRIMARY_COLOR}};
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .goal-badge .icon {
+      font-size: 28px;
+    }
+    
+    .goal-badge .text {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    
+    .scorer-box {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 18px 35px;
+      border-left: 4px solid {{SECONDARY_COLOR}};
+    }
+    
+    .scorer-name {
+      font-size: 32px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    
+    /* Subtle accent line */
+    .accent-line {
+      position: absolute;
+      bottom: 55px;
+      left: 40px;
+      width: 400px;
+      height: 3px;
+      background: {{PRIMARY_COLOR}};
+    }
+  </style>
+</head>
+<body>
+  <div class="accent-line"></div>
+  
+  <div class="lower-third">
+    <div class="goal-badge">
+      <span class="icon">⚽</span>
+      <span class="text">Goal</span>
+    </div>
+    <div class="scorer-box">
+      <div class="scorer-name">{{SCORER}}</div>
+    </div>
+  </div>
+</body>
+</html>

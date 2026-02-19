@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 50% 50%, {{GLOW_COLOR}} 0%, transparent 60%);
+    }
+    
+    .accent-line {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 3px;
+      background: {{ACCENT_COLOR}};
+    }
+    
+    .accent-top { top: 200px; }
+    .accent-bottom { bottom: 200px; }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    
+    .icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    .title {
+      font-size: 72px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 12px;
+      color: {{ACCENT_COLOR}};
+      text-shadow: 0 0 40px {{GLOW_COLOR}};
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <div class="accent-line accent-top"></div>
+  <div class="accent-line accent-bottom"></div>
+  
+  <div class="content">
+    <div class="icon">{{ICON}}</div>
+    <div class="title">{{TITLE}}</div>
+  </div>
+</body>
+</html>

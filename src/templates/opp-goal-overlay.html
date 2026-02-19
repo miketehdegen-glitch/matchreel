@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 1280px;
+      height: 720px;
+      background: transparent;
+      font-family: 'Oswald', sans-serif;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Dark red vignette */
+    .vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, transparent 30%, rgba(80,0,20,0.3) 70%, rgba(50,0,10,0.5) 100%);
+    }
+    
+    /* Red glow burst (smaller, more ominous) */
+    .burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,0,50,0.25) 0%, rgba(255,0,50,0.08) 40%, transparent 60%);
+      border-radius: 50%;
+    }
+    
+    /* Crack/shatter effect lines */
+    .crack-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    
+    .crack-line {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,0,50,0.6), rgba(150,0,30,0.8), transparent);
+    }
+    
+    .crack-line:nth-child(1) { top: 30%; left: 0; width: 25%; transform: rotate(12deg); }
+    .crack-line:nth-child(2) { top: 25%; right: 0; width: 28%; transform: rotate(-8deg); }
+    .crack-line:nth-child(3) { top: 68%; left: 0; width: 22%; transform: rotate(-15deg); }
+    .crack-line:nth-child(4) { top: 72%; right: 0; width: 30%; transform: rotate(10deg); }
+    
+    /* X marks */
+    .x-mark {
+      position: absolute;
+      font-size: 80px;
+      color: #ff0050;
+      text-shadow: 0 0 20px #ff0050, 0 0 40px rgba(255,0,50,0.5);
+      opacity: 0.7;
+    }
+    
+    .x-1 { top: 15%; left: 12%; transform: rotate(-10deg); }
+    .x-2 { top: 12%; right: 15%; transform: rotate(15deg); }
+    .x-3 { bottom: 18%; left: 18%; transform: rotate(8deg); font-size: 60px; }
+    .x-4 { bottom: 15%; right: 12%; transform: rotate(-12deg); font-size: 70px; }
+    
+    /* Main text */
+    .goal-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    
+    .goal-text {
+      font-size: 140px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      color: #fff;
+      text-shadow: 
+        0 0 20px #ff0050,
+        0 0 40px #ff0050,
+        0 0 70px rgba(255,0,50,0.6),
+        5px 5px 0 #660020,
+        8px 8px 0 rgba(0,0,0,0.4);
+      -webkit-text-stroke: 2px #ff3366;
+    }
+    
+    .sub-text {
+      font-size: 70px;
+      font-weight: 700;
+      letter-spacing: 15px;
+      color: #ff3366;
+      text-shadow: 
+        0 0 15px #ff0050,
+        3px 3px 0 rgba(0,0,0,0.5);
+      margin-top: -5px;
+    }
+    
+    /* Lower third */
+    .lower-third {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    
+    .goal-badge {
+      background: linear-gradient(135deg, #ff0050, #aa0030);
+      padding: 15px 25px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      box-shadow: 0 4px 30px rgba(255, 0, 80, 0.6);
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+    }
+    
+    .opponent-info {
+      background: linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.8));
+      padding: 15px 40px 15px 25px;
+      clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%);
+    }
+    
+    .opponent-name {
+      font-size: 32px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px rgba(255,0,50,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="vignette"></div>
+  <div class="burst"></div>
+  
+  <div class="crack-lines">
+    <div class="crack-line"></div>
+    <div class="crack-line"></div>
+    <div class="crack-line"></div>
+    <div class="crack-line"></div>
+  </div>
+  
+  <div class="x-mark x-1">✕</div>
+  <div class="x-mark x-2">✕</div>
+  <div class="x-mark x-3">✕</div>
+  <div class="x-mark x-4">✕</div>
+  
+  <div class="goal-container">
+    <div class="goal-text">GOAL</div>
+    <div class="sub-text">CONCEDED</div>
+  </div>
+  
+  <div class="lower-third">
+    <div class="goal-badge">❌ THEY SCORED</div>
+    <div class="opponent-info">
+      <div class="opponent-name">{{OPPONENT}}</div>
+    </div>
+  </div>
+</body>
+</html>
