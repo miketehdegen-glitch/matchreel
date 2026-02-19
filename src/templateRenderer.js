@@ -10,9 +10,29 @@ class TemplateRenderer {
 
   async init() {
     if (!this.browser) {
+      // Find chromium - check various paths for Railway/Nix
+      const chromiumPaths = [
+        process.env.PUPPETEER_EXECUTABLE_PATH,
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/google-chrome',
+      ].filter(Boolean);
+      
+      let executablePath = null;
+      const fs = require('fs');
+      for (const p of chromiumPaths) {
+        if (fs.existsSync(p)) {
+          executablePath = p;
+          break;
+        }
+      }
+      
+      console.log('🌐 Launching Puppeteer with:', executablePath || 'bundled chromium');
+      
       this.browser = await puppeteer.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        executablePath: executablePath || undefined,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
       });
     }
   }

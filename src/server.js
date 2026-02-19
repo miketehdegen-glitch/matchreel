@@ -5,9 +5,13 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
-// Stripe setup
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Stripe setup (handle missing keys gracefully)
+const stripe = process.env.STRIPE_SECRET_KEY ? require('stripe')(process.env.STRIPE_SECRET_KEY) : null;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+
+console.log('🚀 Starting MatchReel server...');
+console.log('📦 Stripe configured:', !!stripe);
+console.log('🔑 Webhook secret:', !!STRIPE_WEBHOOK_SECRET);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
