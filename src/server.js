@@ -1037,6 +1037,68 @@ function formatDateSimple(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
+// OG image for upload page
+app.get('/og-upload.png', async (req, res) => {
+  try {
+    const ogImagePath = path.join(OUTPUT_DIR, 'og-upload.png');
+    
+    if (!fs.existsSync(ogImagePath)) {
+      const puppeteer = require('puppeteer');
+      const chromiumPaths = [
+        process.env.PUPPETEER_EXECUTABLE_PATH,
+        process.env.CHROMIUM_PATH,
+        '/nix/var/nix/profiles/default/bin/chromium',
+      ].filter(Boolean);
+      let executablePath = null;
+      for (const p of chromiumPaths) {
+        if (fs.existsSync(p)) { executablePath = p; break; }
+      }
+      const browser = await puppeteer.launch({ headless: true, executablePath: executablePath || undefined, args: ['--no-sandbox'] });
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1200, height: 630 });
+      await page.goto(`file://${path.join(__dirname, '../public/og-upload.html')}`, { waitUntil: 'networkidle0' });
+      await page.screenshot({ path: ogImagePath, type: 'png' });
+      await browser.close();
+    }
+    
+    res.sendFile(ogImagePath);
+  } catch (err) {
+    console.error('OG upload image error:', err);
+    res.status(500).send('Error generating image');
+  }
+});
+
+// OG image for reel page
+app.get('/og-reel.png', async (req, res) => {
+  try {
+    const ogImagePath = path.join(OUTPUT_DIR, 'og-reel.png');
+    
+    if (!fs.existsSync(ogImagePath)) {
+      const puppeteer = require('puppeteer');
+      const chromiumPaths = [
+        process.env.PUPPETEER_EXECUTABLE_PATH,
+        process.env.CHROMIUM_PATH,
+        '/nix/var/nix/profiles/default/bin/chromium',
+      ].filter(Boolean);
+      let executablePath = null;
+      for (const p of chromiumPaths) {
+        if (fs.existsSync(p)) { executablePath = p; break; }
+      }
+      const browser = await puppeteer.launch({ headless: true, executablePath: executablePath || undefined, args: ['--no-sandbox'] });
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1200, height: 630 });
+      await page.goto(`file://${path.join(__dirname, '../public/og-reel.html')}`, { waitUntil: 'networkidle0' });
+      await page.screenshot({ path: ogImagePath, type: 'png' });
+      await browser.close();
+    }
+    
+    res.sendFile(ogImagePath);
+  } catch (err) {
+    console.error('OG reel image error:', err);
+    res.status(500).send('Error generating image');
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
