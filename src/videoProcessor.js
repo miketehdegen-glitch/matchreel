@@ -268,6 +268,33 @@ class VideoProcessor {
       return;
     }
 
+    // Validate music file is actually audio (not HTML error page, etc.)
+    const stats = fs.statSync(musicPath);
+    if (stats.size < 10000) {  // Less than 10KB is probably not a real audio file
+      console.log(`Music file too small (${stats.size} bytes), likely corrupted. Skipping music...`);
+      fs.copyFileSync(videoPath, outputPath);
+      return;
+    }
+
+    // Check file header for MP3/audio signatures
+    const buffer = Buffer.alloc(12);
+    const fd = fs.openSync(musicPath, 'r');
+    fs.readSync(fd, buffer, 0, 12, 0);
+    fs.closeSync(fd);
+    
+    // Check for common audio file signatures
+    const isMP3 = buffer[0] === 0xFF && (buffer[1] & 0xE0) === 0xE0;  // MP3 frame sync
+    const isID3 = buffer.toString('utf8', 0, 3) === 'ID3';  // ID3 tag
+    const isRIFF = buffer.toString('utf8', 0, 4) === 'RIFF';  // WAV
+    const isOgg = buffer.toString('utf8', 0, 4) === 'OggS';  // Ogg
+    const isFLAC = buffer.toString('utf8', 0, 4) === 'fLaC';  // FLAC
+    
+    if (!isMP3 && !isID3 && !isRIFF && !isOgg && !isFLAC) {
+      console.log('Music file does not appear to be valid audio. Skipping music...');
+      fs.copyFileSync(videoPath, outputPath);
+      return;
+    }
+
     // First check if video has audio stream
     const hasAudio = await this.videoHasAudio(videoPath);
     
@@ -304,7 +331,12 @@ class VideoProcessor {
       ];
     }
 
-    await this.runFFmpeg(args);
+    try {
+      await this.runFFmpeg(args);
+    } catch (err) {
+      console.log(`Music mixing failed: ${err.message}. Outputting video without music...`);
+      fs.copyFileSync(videoPath, outputPath);
+    }
   }
   
   // Check if video file has audio stream
