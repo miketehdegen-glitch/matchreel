@@ -67,17 +67,23 @@ class VideoProcessor {
   }
 
   // Normalize a clip to standard format (1080x1920 vertical, 30fps)
+  // Handles iPhone HEVC videos with variable frame rate
   async normalizeClip(inputPath, outputPath) {
     const args = [
       '-i', inputPath,
-      '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30',
+      '-vsync', 'cfr',                    // Convert variable frame rate to constant
+      '-r', '30',                          // Force 30fps output
+      '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,setsar=1',
       '-c:v', 'libx264',
       '-preset', 'fast',
       '-crf', '23',
+      '-pix_fmt', 'yuv420p',              // Ensure compatible pixel format
       '-c:a', 'aac',
       '-b:a', '128k',
       '-ar', '44100',
       '-ac', '2',
+      '-max_muxing_queue_size', '1024',   // Prevent buffer overflow
+      '-movflags', '+faststart',          // Optimize for streaming
       '-y',
       outputPath
     ];
