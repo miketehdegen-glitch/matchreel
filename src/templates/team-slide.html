@@ -60,30 +60,20 @@
       z-index: 1;
       height: 100%;
       display: flex;
-      padding: 40px 60px;
-    }
-    
-    .left-side {
-      flex: 1;
-      display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
     }
     
-    .match-info {
-      font-family: 'Roboto', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      opacity: 0.9;
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
     }
     
     .team-logo-small {
-      width: 70px;
-      height: 70px;
-      margin-bottom: 15px;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
     }
     
     .team-logo-small img {
@@ -94,38 +84,37 @@
     
     .team-title {
       font-family: 'Pacifico', cursive;
-      font-size: 64px;
+      font-size: 80px;
       line-height: 1;
-      margin-bottom: 30px;
+      margin-bottom: 15px;
       text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
     }
     
-    .player-list {
-      list-style: none;
+    .match-info {
+      font-family: 'Roboto', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.9;
     }
     
-    .player-list li {
-      font-size: 26px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
-    
-    .right-side {
+    .photo-container {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-left: 40px;
+      width: 100%;
     }
     
     .photo-frame {
-      width: 580px;
-      height: 440px;
-      border: 8px solid #fff;
+      width: 960px;
+      height: 720px;
+      border: 10px solid #fff;
       box-shadow: 
-        0 20px 60px rgba(0,0,0,0.5),
-        0 0 0 4px {{SECONDARY_COLOR}};
-      transform: rotate(2deg);
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 0 5px {{SECONDARY_COLOR}};
+      transform: rotate(-1deg);
       overflow: hidden;
       background: #222;
     }
@@ -142,8 +131,31 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 80px;
+      font-size: 120px;
       background: linear-gradient(135deg, #333, #222);
+    }
+    
+    .player-list-container {
+      margin-top: 40px;
+      text-align: center;
+    }
+    
+    .player-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px 30px;
+      max-width: 900px;
+    }
+    
+    .player-list li {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 20px;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -153,19 +165,22 @@
   <div class="stripe-accent-2"></div>
   
   <div class="content">
-    <div class="left-side">
-      <div class="match-info">{{MATCH_DATE}}<br>{{TEAM_NAME}} vs {{OPPONENT}}</div>
+    <div class="header">
       <div class="team-logo-small">{{LOGO}}</div>
-      <div class="team-title">Team</div>
-      <ul class="player-list">
-        {{PLAYER_LIST}}
-      </ul>
+      <div class="team-title">The Team</div>
+      <div class="match-info">{{TEAM_NAME}} vs {{OPPONENT}} · {{MATCH_DATE}}</div>
     </div>
     
-    <div class="right-side">
+    <div class="photo-container">
       <div class="photo-frame">
         {{TEAM_PHOTO}}
       </div>
+    </div>
+    
+    <div class="player-list-container">
+      <ul class="player-list">
+        {{PLAYER_LIST}}
+      </ul>
     </div>
   </div>
 </body>
