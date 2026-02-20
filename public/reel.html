@@ -622,10 +622,11 @@
         document.getElementById('goalCountPotm').textContent = goals;
         document.getElementById('clipCountPotm').textContent = clips.length;
         
-        // Add POTM photo if available
-        if (matchData.potmPhoto) {
+        // Add POTM photo if available (check both field names for compatibility)
+        const potmPhotoFile = matchData.potmPhoto || matchData.potmPhotoFilename;
+        if (potmPhotoFile) {
           document.getElementById('potmPhotoFrame').innerHTML = 
-            `<img src="/uploads/${matchData.matchId || window.location.pathname.split('/').pop()}/${matchData.potmPhoto}" alt="${matchData.playerOfMatch}">`;
+            `<img src="/uploads/${matchData.matchId || window.location.pathname.split('/').pop()}/${potmPhotoFile}" alt="${matchData.playerOfMatch}">`;
         }
         
         // Hide the lower POTM section since it's now the hero
