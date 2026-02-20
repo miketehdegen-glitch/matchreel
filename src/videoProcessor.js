@@ -21,8 +21,8 @@ class VideoProcessor {
     if (!fs.existsSync(this.tempDir)) fs.mkdirSync(this.tempDir, { recursive: true });
   }
 
-  // Run FFmpeg command and return promise
-  runFFmpeg(args) {
+  // Run FFmpeg command and return promise (with timeout)
+  runFFmpeg(args, timeoutMs = 300000) {  // 5 min timeout default
     return new Promise((resolve, reject) => {
       console.log('FFmpeg:', args.slice(0, 6).join(' ') + '...');
       
@@ -32,11 +32,22 @@ class VideoProcessor {
       });
       
       let stderr = '';
+      let killed = false;
+      
+      // Timeout to prevent infinite hangs
+      const timeout = setTimeout(() => {
+        killed = true;
+        proc.kill('SIGKILL');
+        reject(new Error(`FFmpeg timeout after ${timeoutMs/1000}s`));
+      }, timeoutMs);
+      
       proc.stderr.on('data', (data) => {
         stderr += data.toString();
       });
       
       proc.on('close', (code) => {
+        clearTimeout(timeout);
+        if (killed) return; // Already rejected
         if (code !== 0) {
           reject(new Error(`FFmpeg error (code ${code}): ${stderr.slice(-500)}`));
         } else {
@@ -45,12 +56,13 @@ class VideoProcessor {
       });
       
       proc.on('error', (err) => {
+        clearTimeout(timeout);
         reject(new Error(`FFmpeg spawn error: ${err.message}`));
       });
     });
   }
 
-  // Convert PNG to video segment
+  // Convert PNG to video segment (720p to match clips)
   async imageToVideo(imagePath, outputPath, duration = 3) {
     const args = [
       '-loop', '1',
@@ -58,36 +70,40 @@ class VideoProcessor {
       '-c:v', 'libx264',
       '-t', duration.toString(),
       '-pix_fmt', 'yuv420p',
-      '-vf', 'scale=1080:1920',
+      '-vf', 'scale=720:1280',
+      '-preset', 'veryfast',
       '-r', '30',
+      '-threads', '2',
       '-y',
       outputPath
     ];
-    await this.runFFmpeg(args);
+    await this.runFFmpeg(args, 60000);  // 1 min timeout for images
   }
 
-  // Normalize a clip to standard format (1080x1920 vertical, 30fps)
+  // Normalize a clip to standard format (720x1280 vertical, 30fps)
   // Handles iPhone HEVC videos with variable frame rate
+  // Reduced resolution to 720p to save memory on Railway
   async normalizeClip(inputPath, outputPath) {
     const args = [
       '-i', inputPath,
       '-vsync', 'cfr',                    // Convert variable frame rate to constant
       '-r', '30',                          // Force 30fps output
-      '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,setsar=1',
+      '-vf', 'scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2,setsar=1',
       '-c:v', 'libx264',
-      '-preset', 'fast',
-      '-crf', '23',
+      '-preset', 'veryfast',              // Faster encoding, less memory
+      '-crf', '26',                        // Slightly lower quality, smaller files
       '-pix_fmt', 'yuv420p',              // Ensure compatible pixel format
       '-c:a', 'aac',
-      '-b:a', '128k',
+      '-b:a', '96k',                       // Lower audio bitrate
       '-ar', '44100',
       '-ac', '2',
       '-max_muxing_queue_size', '1024',   // Prevent buffer overflow
       '-movflags', '+faststart',          // Optimize for streaming
+      '-threads', '2',                     // Limit CPU threads
       '-y',
       outputPath
     ];
-    await this.runFFmpeg(args);
+    await this.runFFmpeg(args, 120000);   // 2 min timeout per clip
   }
 
   // Create slow-mo version of a clip (0.5x speed)
