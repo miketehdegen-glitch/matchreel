@@ -2,423 +2,526 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Upload Clips - MatchReel</title>
-  
-  <!-- Open Graph for WhatsApp/Social sharing -->
-  <meta property="og:title" content="⚽ Upload Your Match Clips!">
-  <meta property="og:description" content="Got a great goal, save, or skill? Upload your clips and we'll create an epic highlight reel for the team!">
-  <meta property="og:image" content="https://matchreel-production.up.railway.app/og-upload.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://matchreel-production.up.railway.app/og-upload.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
       min-height: 100vh;
       color: #fff;
     }
     
-    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-bottom: 100px;
+    }
     
-    .header { text-align: center; margin-bottom: 30px; }
+    .header {
+      text-align: center;
+      padding: 30px 0;
+    }
     
-    .logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
-    .logo span { color: #00ff88; }
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #00ff88;
+      margin-bottom: 10px;
+    }
     
     .match-info {
-      background: rgba(0,255,136,0.1);
-      border-radius: 15px;
-      padding: 25px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
       text-align: center;
-      margin-bottom: 30px;
     }
     
-    .match-info h2 { margin-bottom: 10px; font-size: 1.5rem; }
-    .match-info .vs { color: #00ff88; font-weight: 600; }
-    .match-info .date { color: #8899a6; margin-top: 10px; }
-    
-    .upload-card {
-      background: rgba(255,255,255,0.03);
-      border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 20px;
+    .match-teams {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
     
-    .upload-card h3 { margin-bottom: 20px; color: #00d4ff; }
+    .match-date {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .team-colors {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .color-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     
     .upload-area {
-      border: 3px dashed rgba(255,255,255,0.2);
-      border-radius: 15px;
-      padding: 40px;
+      background: rgba(255,255,255,0.05);
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 40px 20px;
       text-align: center;
+      margin-bottom: 24px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
     
-    .upload-area:hover { border-color: #00d4ff; }
-    .upload-area.dragover { border-color: #00ff88; background: rgba(0,255,136,0.1); }
-    
-    .upload-icon { font-size: 3rem; margin-bottom: 15px; }
-    
-    #fileInput { display: none; }
-    
-    .clip-list { margin-top: 20px; }
-    
-    .clip-item {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 15px;
+    .upload-area:hover, .upload-area.dragover {
+      border-color: #00ff88;
+      background: rgba(0,255,136,0.05);
     }
     
-    .clip-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
     }
     
-    .clip-name {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .clip-name .icon { font-size: 1.5rem; }
-    
-    .remove-clip {
-      color: #ff4757;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-    
-    .clip-tags-section { margin-bottom: 15px; }
-    
-    .tag-group-label {
-      font-size: 0.8rem;
-      color: #8899a6;
+    .upload-text {
+      font-size: 16px;
+      font-weight: 500;
       margin-bottom: 8px;
     }
     
-    .clip-tags {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .upload-hint {
+      font-size: 13px;
+      opacity: 0.6;
     }
     
-    .tag-btn {
-      padding: 10px 20px;
-      border-radius: 25px;
-      border: 2px solid rgba(255,255,255,0.2);
-      background: transparent;
-      color: #fff;
+    #fileInput {
+      display: none;
+    }
+    
+    .clip-type-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    
+    .clip-type {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 16px 8px;
+      text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     
-    .tag-btn:hover { border-color: #00d4ff; }
+    .clip-type:hover {
+      background: rgba(255,255,255,0.15);
+    }
     
-    .tag-btn.active.goal { background: #00ff88; color: #0f1923; border-color: #00ff88; }
-    .tag-btn.active.tekkers { background: #ff6b6b; color: #0f1923; border-color: #ff6b6b; }
-    .tag-btn.active.pass { background: #00d4ff; color: #0f1923; border-color: #00d4ff; }
-    .tag-btn.active.chance { background: #ffa502; color: #0f1923; border-color: #ffa502; }
-    .tag-btn.active.celebration { background: #ffd700; color: #0f1923; border-color: #ffd700; }
-    .tag-btn.active.siuuu { background: #ff69b4; color: #0f1923; border-color: #ff69b4; }
-    .tag-btn.active.opp-goal { background: #ff0050; color: #fff; border-color: #ff0050; }
-    .tag-btn.active.save { background: #9b59b6; color: #fff; border-color: #9b59b6; }
-    .tag-btn.active.skills { background: #e056fd; color: #0f1923; border-color: #e056fd; }
-    .tag-btn.active.tackle { background: #27ae60; color: #fff; border-color: #27ae60; }
-    
-    .goal-details {
-      display: none;
+    .clip-type.selected {
+      border-color: #00ff88;
       background: rgba(0,255,136,0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 10px;
     }
     
-    .goal-details.show { display: block; }
+    .clip-type-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
     
-    .goal-details label { display: block; margin-bottom: 8px; color: #8899a6; }
+    .clip-type-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
     
-    .goal-details select, .goal-details input {
-      width: 100%;
+    .clips-list {
+      margin-bottom: 24px;
+    }
+    
+    .clip-item {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
       padding: 12px;
-      border-radius: 8px;
-      border: 2px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     
-    .player-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .clip-thumb {
+      width: 60px;
+      height: 80px;
+      background: #333;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    
+    .clip-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .clip-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .clip-name {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .clip-meta {
+      font-size: 12px;
+      opacity: 0.6;
+    }
+    
+    .clip-badge {
+      background: #00ff88;
+      color: #000;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    
+    .clip-remove {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,0,0,0.2);
+      border: none;
+      color: #ff4444;
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    
+    .scorer-input {
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 14px;
       margin-top: 8px;
     }
     
-    .player-chip {
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: 2px solid rgba(255,255,255,0.2);
-      background: transparent;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 0.9rem;
+    .scorer-input::placeholder {
+      color: rgba(255,255,255,0.4);
     }
     
-    .player-chip:hover { border-color: #00d4ff; }
-    .player-chip.selected { background: #00ff88; color: #0f1923; border-color: #00ff88; }
-    
-    .player-chip.add-player {
-      border-style: dashed;
-      color: #8899a6;
-    }
-    .player-chip.add-player:hover { border-color: #00ff88; color: #00ff88; }
-    
-    .add-player-input {
-      display: none;
-      margin-top: 10px;
+    .submit-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26,26,46,0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
     
-    .add-player-input.show { display: flex; gap: 10px; }
-    
-    .add-player-input input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 2px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-    }
-    
-    .add-player-input button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      background: #00ff88;
-      color: #0f1923;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    
-    .btn {
+    .submit-btn {
       width: 100%;
-      padding: 18px;
+      max-width: 500px;
+      margin: 0 auto;
+      display: block;
+      background: linear-gradient(135deg, #00ff88, #00cc6a);
       border: none;
-      border-radius: 10px;
-      font-size: 1.2rem;
-      font-weight: 700;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #000;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
     
-    .btn:hover { transform: scale(1.02); }
-    
-    .btn-primary { background: linear-gradient(90deg, #00ff88, #00d4ff); color: #0f1923; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    
-    .upload-count {
-      text-align: center;
-      padding: 15px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 10px;
-      margin-bottom: 20px;
+    .submit-btn:hover {
+      transform: scale(1.02);
     }
     
-    .upload-count .number { font-size: 2rem; font-weight: 800; color: #00ff88; }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
     
-    #status {
-      text-align: center;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 10px;
+    .upload-progress {
       display: none;
+      text-align: center;
+      padding: 20px;
     }
     
-    #status.success { background: rgba(0,255,136,0.2); display: block; }
-    #status.error { background: rgba(255,71,87,0.2); display: block; }
-    #status.processing { background: rgba(0,212,255,0.2); display: block; }
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
     
-    .existing-clips {
-      background: rgba(255,255,255,0.03);
-      border-radius: 15px;
-      padding: 20px;
+    .progress-fill {
+      height: 100%;
+      background: #00ff88;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .success-icon {
+      font-size: 64px;
       margin-bottom: 20px;
     }
     
-    .existing-clips h4 { color: #8899a6; margin-bottom: 15px; }
-    
-    .clip-stats {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
     
-    .clip-stat {
-      background: rgba(255,255,255,0.05);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .success-text {
+      opacity: 0.7;
+      margin-bottom: 24px;
     }
     
-    .clip-stat .num { font-weight: 700; color: #00ff88; }
-    .clip-stat.opp .num { color: #ff0050; }
-    
-    .existing-clip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .existing-clip .tag {
-      padding: 4px 10px;
+    .add-more-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
       border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
     }
     
-    .existing-clip .tag.goal { background: #00ff88; color: #0f1923; }
-    .existing-clip .tag.opp-goal { background: #ff0050; color: #fff; }
-    .existing-clip .tag.chance { background: #ffa502; color: #0f1923; }
-    .existing-clip .tag.save { background: #00d4ff; color: #0f1923; }
-    .existing-clip .tag.skills { background: #ff6b6b; color: #0f1923; }
-    .existing-clip .tag.celebration { background: #ffd700; color: #0f1923; }
+    .error-state {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .error-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .error-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .error-text {
+      opacity: 0.7;
+    }
+    
+    .uploading-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(0,255,136,0.1);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(0,255,136,0.3);
+      border-top-color: #00ff88;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1 class="logo">⚽ Match<span>Reel</span></h1>
+      <div class="logo">⚽ MatchReel</div>
     </div>
     
-    <div class="match-info" id="matchInfo">
-      <h2><span id="teamName">Loading...</span> <span class="vs">vs</span> <span id="opponent"></span></h2>
-      <div class="date" id="matchDate"></div>
+    <!-- Error state for invalid match -->
+    <div class="error-state" id="errorState">
+      <div class="error-icon">😕</div>
+      <div class="error-title">Match not found</div>
+      <div class="error-text">This upload link may have expired or the match doesn't exist.</div>
     </div>
     
-    <div class="upload-count">
-      <div class="number" id="clipCount">0</div>
-      <div>clips uploaded so far</div>
-    </div>
-    
-    <div class="existing-clips" id="existingClips" style="display: none;">
-      <h4>📹 Clips from the team:</h4>
-      <div id="existingList"></div>
-    </div>
-    
-    <div class="upload-card">
-      <h3>📤 Add Your Clips</h3>
-      
-      <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">🎥</div>
-        <p>Tap to select videos or drag & drop</p>
-        <p style="color: #666; margin-top: 10px; font-size: 0.9rem;">Goals, chances, saves — add them all!</p>
-        <input type="file" id="fileInput" multiple accept="video/*">
+    <!-- Main upload UI -->
+    <div id="mainUI">
+      <div class="match-info" id="matchInfo">
+        <div class="match-teams" id="matchTeams">Loading...</div>
+        <div class="match-date" id="matchDate"></div>
+        <div class="team-colors" id="teamColors"></div>
       </div>
       
-      <div class="clip-list" id="clipList"></div>
+      <div class="section-title">📹 What type of clip?</div>
+      <div class="clip-type-selector" id="clipTypes">
+        <div class="clip-type selected" data-type="goal">
+          <div class="clip-type-icon">⚽</div>
+          <div class="clip-type-label">Goal</div>
+        </div>
+        <div class="clip-type" data-type="chance">
+          <div class="clip-type-icon">🎯</div>
+          <div class="clip-type-label">Chance</div>
+        </div>
+        <div class="clip-type" data-type="save">
+          <div class="clip-type-icon">🧤</div>
+          <div class="clip-type-label">Save</div>
+        </div>
+        <div class="clip-type" data-type="skills">
+          <div class="clip-type-icon">✨</div>
+          <div class="clip-type-label">Skills</div>
+        </div>
+        <div class="clip-type" data-type="celebration">
+          <div class="clip-type-icon">🎉</div>
+          <div class="clip-type-label">Celebration</div>
+        </div>
+        <div class="clip-type" data-type="opp-goal">
+          <div class="clip-type-icon">😤</div>
+          <div class="clip-type-label">They Scored</div>
+        </div>
+      </div>
+      
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">🎬</div>
+        <div class="upload-text">Tap to select video</div>
+        <div class="upload-hint">or drag and drop here</div>
+      </div>
+      <input type="file" id="fileInput" accept="video/*" multiple>
+      
+      <div class="uploading-indicator" id="uploadingIndicator">
+        <div class="spinner"></div>
+        <span>Uploading...</span>
+      </div>
+      
+      <div class="clips-list" id="clipsList"></div>
     </div>
     
-    <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadClips()">
-      Upload Clips
-    </button>
-    
-    <div id="status"></div>
+    <!-- Success state -->
+    <div class="success-message" id="successState">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Clips uploaded!</div>
+      <div class="success-text">Your clips have been added to the match. The coach will create the highlight reel soon.</div>
+      <button class="add-more-btn" onclick="resetUI()">Upload more clips</button>
+    </div>
   </div>
   
+  <div class="submit-bar" id="submitBar" style="display: none;">
+    <button class="submit-btn" id="submitBtn" onclick="submitClips()">
+      Upload <span id="clipCount">0</span> clip(s)
+    </button>
+  </div>
+
   <script>
-    // Get match ID from URL
-    const matchId = window.location.pathname.split('/').pop();
+    let matchId = null;
     let matchData = null;
-    let clips = [];
+    let selectedType = 'goal';
+    let pendingClips = []; // Clips waiting to be uploaded
     
-    // Load match data
+    // Get match ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    matchId = urlParams.get('m') || window.location.pathname.split('/').pop();
+    
+    // Clean up match ID (remove .html if present)
+    if (matchId && matchId.includes('.')) {
+      matchId = matchId.split('.')[0];
+    }
+    
+    // Load match info
     async function loadMatch() {
+      if (!matchId || matchId === 'upload') {
+        showError();
+        return;
+      }
+      
       try {
-        const res = await fetch(`/api/matches/${matchId}`);
-        const data = await res.json();
-        
-        if (data.success) {
-          matchData = data.match;
-          document.getElementById('teamName').textContent = matchData.teamName;
-          document.getElementById('opponent').textContent = matchData.opponent;
-          document.getElementById('matchDate').textContent = formatDate(matchData.matchDate);
-          document.getElementById('clipCount').textContent = matchData.clips?.length || 0;
-          
-          if (matchData.clips?.length > 0) {
-            renderExistingClips(matchData.clips);
-          }
-        } else {
-          document.getElementById('matchInfo').innerHTML = '<h2>Match not found</h2>';
+        const resp = await fetch(`/api/matches/${matchId}`);
+        if (!resp.ok) {
+          showError();
+          return;
         }
+        
+        matchData = await resp.json();
+        
+        document.getElementById('matchTeams').textContent = 
+          `${matchData.teamName} vs ${matchData.opponent}`;
+        
+        const date = new Date(matchData.matchDate);
+        document.getElementById('matchDate').textContent = 
+          date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        // Show team colors
+        if (matchData.colors) {
+          document.getElementById('teamColors').innerHTML = `
+            <div class="color-dot" style="background: ${matchData.colors.primary}"></div>
+            <div class="color-dot" style="background: ${matchData.colors.secondary}"></div>
+          `;
+        }
+        
       } catch (err) {
         console.error('Failed to load match:', err);
+        showError();
       }
     }
     
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-GB', { 
-        weekday: 'long', 
-        day: 'numeric', 
-        month: 'long' 
-      });
+    function showError() {
+      document.getElementById('mainUI').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
     }
     
-    function renderExistingClips(existingClips) {
-      const container = document.getElementById('existingClips');
-      const list = document.getElementById('existingList');
+    // Clip type selection
+    document.getElementById('clipTypes').addEventListener('click', (e) => {
+      const typeEl = e.target.closest('.clip-type');
+      if (!typeEl) return;
       
-      // Calculate stats
-      const goals = existingClips.filter(c => c.type === 'goal').length;
-      const oppGoals = existingClips.filter(c => c.type === 'opp-goal').length;
-      const saves = existingClips.filter(c => c.type === 'save').length;
-      const tekkers = existingClips.filter(c => c.type === 'tekkers').length;
-      const skills = existingClips.filter(c => c.type === 'skills').length;
-      const chances = existingClips.filter(c => c.type === 'chance').length;
-      const celebrations = existingClips.filter(c => c.type === 'celebration').length;
-      const siuuu = existingClips.filter(c => c.type === 'siuuu').length;
-      const passes = existingClips.filter(c => c.type === 'pass').length;
-      const tackles = existingClips.filter(c => c.type === 'tackle').length;
-      
-      container.style.display = 'block';
-      list.innerHTML = `
-        <div class="clip-stats">
-          <div class="clip-stat">⚽ <span class="num">${goals}</span> Goals</div>
-          <div class="clip-stat">🔥 <span class="num">${tekkers}</span> Tekkers</div>
-          <div class="clip-stat">💥 <span class="num">${chances}</span> Big Chances</div>
-          <div class="clip-stat">🎉 <span class="num">${celebrations}</span> Celebrations</div>
-          <div class="clip-stat opp">❌ <span class="num">${oppGoals}</span> Opp Goals</div>
-          <div class="clip-stat">🧤 <span class="num">${saves}</span> Saves</div>
-          <div class="clip-stat">✨ <span class="num">${skills}</span> Skills</div>
-          <div class="clip-stat">💪 <span class="num">${tackles}</span> Tackles</div>
-        </div>
-      ` + existingClips.map(clip => `
-        <div class="existing-clip">
-          <span class="tag ${clip.type}">${clip.type === 'opp-goal' ? 'OPP GOAL' : clip.type.toUpperCase()}</span>
-          <span>${clip.type === 'goal' ? `${clip.scorer} ${clip.minute}'` : clip.type === 'opp-goal' ? 'Opponent' : clip.uploadedBy || 'Team'}</span>
-        </div>
-      `).join('');
-    }
+      document.querySelectorAll('.clip-type').forEach(el => el.classList.remove('selected'));
+      typeEl.classList.add('selected');
+      selectedType = typeEl.dataset.type;
+    });
     
-    // File handling
+    // File upload handling
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     
@@ -439,201 +542,132 @@
       handleFiles(e.dataTransfer.files);
     });
     
-    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
     
     function handleFiles(files) {
-      for (let file of files) {
-        if (file.type.startsWith('video/')) {
-          clips.push({
-            file,
-            type: null,
-            scorer: null
-          });
-        }
+      for (const file of files) {
+        if (!file.type.startsWith('video/')) continue;
+        
+        const clip = {
+          id: Date.now() + Math.random(),
+          file: file,
+          type: selectedType,
+          scorer: ''
+        };
+        
+        pendingClips.push(clip);
+        renderClipsList();
       }
-      renderClips();
-      updateButton();
+      
+      fileInput.value = '';
     }
     
-    function renderClips() {
-      const list = document.getElementById('clipList');
-      list.innerHTML = clips.map((clip, i) => `
-        <div class="clip-item">
-          <div class="clip-header">
-            <div class="clip-name">
-              <span class="icon">🎥</span>
-              <span>${clip.file.name}</span>
+    function renderClipsList() {
+      const list = document.getElementById('clipsList');
+      
+      if (pendingClips.length === 0) {
+        list.innerHTML = '';
+        document.getElementById('submitBar').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('submitBar').style.display = 'block';
+      document.getElementById('clipCount').textContent = pendingClips.length;
+      
+      list.innerHTML = pendingClips.map((clip, i) => {
+        const typeLabels = {
+          goal: '⚽ Goal',
+          chance: '🎯 Chance', 
+          save: '🧤 Save',
+          skills: '✨ Skills',
+          celebration: '🎉 Celebration',
+          'opp-goal': '😤 Conceded'
+        };
+        
+        const showScorer = clip.type === 'goal' || clip.type === 'chance';
+        
+        return `
+          <div class="clip-item">
+            <div class="clip-thumb">
+              <video src="${URL.createObjectURL(clip.file)}" muted></video>
             </div>
-            <span class="remove-clip" onclick="removeClip(${i})">✕</span>
+            <div class="clip-info">
+              <div class="clip-name">${clip.file.name}</div>
+              <div class="clip-meta">${(clip.file.size / 1024 / 1024).toFixed(1)} MB</div>
+              <span class="clip-badge">${typeLabels[clip.type]}</span>
+              ${showScorer ? `
+                <input type="text" class="scorer-input" 
+                  placeholder="${clip.type === 'goal' ? 'Who scored?' : 'Who had the chance?'}"
+                  value="${clip.scorer}"
+                  onchange="updateScorer(${i}, this.value)">
+              ` : ''}
+            </div>
+            <button class="clip-remove" onclick="removeClip(${i})">×</button>
           </div>
-          
-          <div class="clip-tags-section">
-            <div class="tag-group-label">🏷️ Tag the player:</div>
-            <div class="clip-tags">
-              <button class="tag-btn ${clip.type === 'goal' ? 'active goal' : ''}" onclick="setType(${i}, 'goal')">
-                ⚽ Goal
-              </button>
-              <button class="tag-btn ${clip.type === 'tekkers' ? 'active tekkers' : ''}" onclick="setType(${i}, 'tekkers')">
-                🔥 Tekkers
-              </button>
-              <button class="tag-btn ${clip.type === 'pass' ? 'active pass' : ''}" onclick="setType(${i}, 'pass')">
-                🎯 Pass
-              </button>
-              <button class="tag-btn ${clip.type === 'chance' ? 'active chance' : ''}" onclick="setType(${i}, 'chance')">
-                💥 Big Chance
-              </button>
-              <button class="tag-btn ${clip.type === 'celebration' ? 'active celebration' : ''}" onclick="setType(${i}, 'celebration')">
-                🎉 Celebration
-              </button>
-              <button class="tag-btn ${clip.type === 'siuuu' ? 'active siuuu' : ''}" onclick="setType(${i}, 'siuuu')">
-                🙌 SIUUU
-              </button>
-            </div>
-            <div class="tag-group-label" style="margin-top: 12px;">🎬 General clips:</div>
-            <div class="clip-tags">
-              <button class="tag-btn ${clip.type === 'opp-goal' ? 'active opp-goal' : ''}" onclick="setType(${i}, 'opp-goal')">
-                ❌ Opp Goal
-              </button>
-              <button class="tag-btn ${clip.type === 'save' ? 'active save' : ''}" onclick="setType(${i}, 'save')">
-                🧤 Save
-              </button>
-              <button class="tag-btn ${clip.type === 'skills' ? 'active skills' : ''}" onclick="setType(${i}, 'skills')">
-                ✨ Skills
-              </button>
-              <button class="tag-btn ${clip.type === 'tackle' ? 'active tackle' : ''}" onclick="setType(${i}, 'tackle')">
-                💪 Tackle
-              </button>
-            </div>
-          </div>
-          
-          <div class="goal-details ${['goal','tekkers','pass','chance','celebration','siuuu'].includes(clip.type) ? 'show' : ''}" id="playerDetails-${i}">
-            <label>${
-              clip.type === 'goal' ? 'Who scored? ⚽' : 
-              clip.type === 'tekkers' ? 'Who pulled off the tekkers? 🔥' : 
-              clip.type === 'pass' ? 'Who made the pass? 🎯' : 
-              clip.type === 'chance' ? 'Who had the chance? 💥' : 
-              clip.type === 'celebration' ? 'Who is celebrating? 🎉' : 
-              clip.type === 'siuuu' ? 'Who hit the SIUUU? 🙌' : 'Who is it?'
-            }</label>
-            <div class="player-chips">
-              ${matchData?.squad?.map(p => `<button class="player-chip ${clip.scorer === p ? 'selected' : ''}" onclick="setScorer(${i}, '${p}')">${p}</button>`).join('') || ''}
-              <button class="player-chip add-player" onclick="showAddPlayer(${i})">+ Add</button>
-            </div>
-            <div class="add-player-input" id="addPlayerInput-${i}">
-              <input type="text" placeholder="Player name" id="newPlayerName-${i}" onkeypress="if(event.key==='Enter')addNewPlayer(${i})">
-              <button onclick="addNewPlayer(${i})">Add</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+    
+    function updateScorer(index, value) {
+      pendingClips[index].scorer = value;
     }
     
     function removeClip(index) {
-      clips.splice(index, 1);
-      renderClips();
-      updateButton();
+      pendingClips.splice(index, 1);
+      renderClipsList();
     }
     
-    function setType(index, type) {
-      clips[index].type = clips[index].type === type ? null : type;
-      // Clear scorer if switching to a type that doesn't need a name
-      const needsName = ['goal', 'tekkers', 'pass', 'chance', 'celebration', 'siuuu'];
-      if (!needsName.includes(clips[index].type)) {
-        clips[index].scorer = null;
-      }
-      renderClips();
-      updateButton();
-    }
-    
-    function setScorer(index, scorer) {
-      clips[index].scorer = clips[index].scorer === scorer ? null : scorer;
-      renderClips();
-      updateButton();
-    }
-    
-    function showAddPlayer(index) {
-      const input = document.getElementById(`addPlayerInput-${index}`);
-      input.classList.toggle('show');
-      if (input.classList.contains('show')) {
-        document.getElementById(`newPlayerName-${index}`).focus();
-      }
-    }
-    
-    async function addNewPlayer(index) {
-      const input = document.getElementById(`newPlayerName-${index}`);
-      const name = input.value.trim();
-      if (!name) return;
+    async function submitClips() {
+      if (pendingClips.length === 0) return;
       
-      // Add to local squad
-      if (!matchData.squad.includes(name)) {
-        matchData.squad.push(name);
-        
-        // Also save to server
-        try {
-          await fetch(`/api/matches/${matchId}/squad`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ player: name })
-          });
-        } catch (err) {
-          console.error('Failed to save player:', err);
-        }
-      }
+      const btn = document.getElementById('submitBtn');
+      const indicator = document.getElementById('uploadingIndicator');
       
-      // Select this player
-      clips[index].scorer = name;
-      input.value = '';
-      renderClips();
-      updateButton();
-    }
-    
-    function updateButton() {
-      const allTagged = clips.length > 0 && clips.every(c => c.type !== null);
-      // These types need a player name
-      const needsName = ['goal', 'tekkers', 'pass', 'chance', 'celebration', 'siuuu'];
-      const namedClipsValid = clips.filter(c => needsName.includes(c.type)).every(c => c.scorer);
-      document.getElementById('uploadBtn').disabled = !(allTagged && namedClipsValid);
-    }
-    
-    async function uploadClips() {
-      const btn = document.getElementById('uploadBtn');
       btn.disabled = true;
       btn.textContent = 'Uploading...';
-      showStatus('Uploading your clips...', 'processing');
+      indicator.style.display = 'flex';
       
       try {
-        for (let i = 0; i < clips.length; i++) {
-          const clip = clips[i];
+        for (const clip of pendingClips) {
           const formData = new FormData();
           formData.append('video', clip.file);
           formData.append('type', clip.type);
-          formData.append('scorer', clip.scorer || '');
+          if (clip.scorer) {
+            formData.append('scorer', clip.scorer);
+          }
           
-          await fetch(`/api/matches/${matchId}/clips`, {
+          const resp = await fetch(`/api/matches/${matchId}/clips`, {
             method: 'POST',
             body: formData
           });
           
-          showStatus(`Uploaded ${i + 1} of ${clips.length}...`, 'processing');
+          if (!resp.ok) {
+            throw new Error('Upload failed');
+          }
         }
         
-        showStatus('✓ All clips uploaded! The team admin will create the highlight reel.', 'success');
-        clips = [];
-        renderClips();
-        loadMatch(); // Refresh to show new count
+        // Success!
+        pendingClips = [];
+        document.getElementById('mainUI').style.display = 'none';
+        document.getElementById('submitBar').style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
         
       } catch (err) {
-        showStatus('Error: ' + err.message, 'error');
+        console.error('Upload error:', err);
+        alert('Upload failed. Please try again.');
+        btn.disabled = false;
+        btn.textContent = `Upload ${pendingClips.length} clip(s)`;
       }
       
-      btn.textContent = 'Upload Clips';
-      btn.disabled = true;
+      indicator.style.display = 'none';
     }
     
-    function showStatus(message, type) {
-      const status = document.getElementById('status');
-      status.textContent = message;
-      status.className = type;
+    function resetUI() {
+      document.getElementById('mainUI').style.display = 'block';
+      document.getElementById('successState').style.display = 'none';
+      renderClipsList();
     }
     
     // Init
