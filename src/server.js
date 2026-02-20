@@ -170,6 +170,11 @@ app.get('/admin/:matchId', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
 
+// Client-side generate page (no server processing!)
+app.get('/generate/:matchId', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/generate.html'));
+});
+
 // Reel share page (for WhatsApp group)
 app.get('/reel/:matchId', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/reel.html'));

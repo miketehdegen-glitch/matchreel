@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Reel - MatchReel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    
+    .logo span { color: #00ff88; }
+    
+    .subtitle {
+      color: #8899a6;
+      margin-bottom: 40px;
+    }
+    
+    .match-info {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+    
+    .match-teams {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .vs { color: #00ff88; }
+    
+    .match-meta {
+      color: #8899a6;
+      font-size: 0.9rem;
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #00ff88;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: #8899a6;
+    }
+    
+    .progress-container {
+      display: none;
+      margin: 30px 0;
+    }
+    
+    .progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 6px;
+    }
+    
+    .progress-text {
+      font-size: 0.9rem;
+      color: #8899a6;
+    }
+    
+    .progress-percent {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #00ff88;
+      margin-bottom: 10px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 16px 40px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #00ff88, #00cc6a);
+      color: #0f1923;
+    }
+    
+    .btn-primary:hover {
+      transform: scale(1.05);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-download {
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      color: #fff;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+    
+    .result-container {
+      display: none;
+      margin-top: 30px;
+    }
+    
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    .result-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .result-subtitle {
+      color: #8899a6;
+      margin-bottom: 20px;
+    }
+    
+    .video-preview {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 12px;
+      margin: 20px auto;
+      display: block;
+    }
+    
+    .warning {
+      background: rgba(255,165,0,0.1);
+      border: 1px solid rgba(255,165,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: #ffa500;
+    }
+    
+    .error-message {
+      display: none;
+      background: rgba(255,0,0,0.1);
+      border: 1px solid rgba(255,0,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px 0;
+      color: #ff4444;
+    }
+    
+    .tips {
+      text-align: left;
+      font-size: 0.85rem;
+      color: #8899a6;
+      margin-top: 30px;
+    }
+    
+    .tips li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="logo">⚽ Match<span>Reel</span></h1>
+    <p class="subtitle">Generate your highlight reel</p>
+    
+    <div class="match-info" id="matchInfo">
+      <div class="match-teams">
+        <span id="teamName">Loading...</span>
+        <span class="vs">vs</span>
+        <span id="opponent"></span>
+      </div>
+      <div class="match-meta" id="matchDate"></div>
+      
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="clipCount">0</div>
+          <div class="stat-label">Clips</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="goalCount">0</div>
+          <div class="stat-label">Goals</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="warning">
+      ⚡ <strong>Note:</strong> Video will be processed on your device. Keep this tab open - takes 2-5 minutes depending on clips.
+    </div>
+    
+    <div class="error-message" id="errorMessage"></div>
+    
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-percent" id="progressPercent">0%</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Initializing...</div>
+    </div>
+    
+    <button class="btn btn-primary" id="generateBtn" onclick="startGenerate()">
+      🎬 Generate Reel
+    </button>
+    
+    <div class="result-container" id="resultContainer">
+      <div class="success-icon">🎉</div>
+      <div class="result-title">Reel Ready!</div>
+      <div class="result-subtitle">Your highlight reel has been created</div>
+      
+      <video id="videoPreview" class="video-preview" controls></video>
+      
+      <a href="#" class="btn btn-download" id="downloadBtn" download>
+        📥 Download Reel
+      </a>
+      
+      <ul class="tips">
+        <li>💡 Open in Instagram to add music & filters</li>
+        <li>📱 Share directly to your WhatsApp group</li>
+        <li>🎵 Instagram has a huge free music library</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FFmpeg WASM -->
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+  <script src="/js/video-renderer.js"></script>
+  
+  <script>
+    let matchId = null;
+    let matchData = null;
+    let adminToken = null;
+    const renderer = new VideoRenderer();
+    
+    // Get match ID and token from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    matchId = urlParams.get('m') || window.location.pathname.split('/').filter(Boolean).pop();
+    adminToken = urlParams.get('token');
+    
+    // Load match data
+    async function loadMatch() {
+      try {
+        const resp = await fetch(`/api/matches/${matchId}`);
+        if (!resp.ok) throw new Error('Match not found');
+        
+        const data = await resp.json();
+        matchData = data.match || data;
+        
+        document.getElementById('teamName').textContent = matchData.teamName;
+        document.getElementById('opponent').textContent = matchData.opponent;
+        document.getElementById('matchDate').textContent = new Date(matchData.matchDate)
+          .toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+        
+        const clips = matchData.clips || [];
+        document.getElementById('clipCount').textContent = clips.length;
+        document.getElementById('goalCount').textContent = clips.filter(c => c.type === 'goal').length;
+        
+        if (clips.length === 0) {
+          document.getElementById('generateBtn').disabled = true;
+          document.getElementById('generateBtn').textContent = 'No clips to process';
+        }
+        
+      } catch (err) {
+        console.error('Load error:', err);
+        document.getElementById('matchInfo').innerHTML = '<p style="color:#ff4444">Failed to load match</p>';
+      }
+    }
+    
+    // Update progress UI
+    function updateProgress(step, percent) {
+      document.getElementById('progressPercent').textContent = `${percent}%`;
+      document.getElementById('progressFill').style.width = `${percent}%`;
+      document.getElementById('progressText').textContent = step;
+    }
+    
+    // Start generation
+    async function startGenerate() {
+      const btn = document.getElementById('generateBtn');
+      const progressContainer = document.getElementById('progressContainer');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      btn.disabled = true;
+      btn.style.display = 'none';
+      progressContainer.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      try {
+        const result = await renderer.renderReel(
+          matchData,
+          matchData.clips || [],
+          updateProgress
+        );
+        
+        // Show result
+        progressContainer.style.display = 'none';
+        document.getElementById('resultContainer').style.display = 'block';
+        
+        document.getElementById('videoPreview').src = result.url;
+        document.getElementById('downloadBtn').href = result.url;
+        document.getElementById('downloadBtn').download = result.filename;
+        
+      } catch (err) {
+        console.error('Generate error:', err);
+        errorMessage.textContent = `Error: ${err.message}. Try refreshing and generating again.`;
+        errorMessage.style.display = 'block';
+        btn.style.display = 'block';
+        btn.disabled = false;
+        progressContainer.style.display = 'none';
+      }
+    }
+    
+    // Init
+    loadMatch();
+  </script>
+</body>
+</html>
