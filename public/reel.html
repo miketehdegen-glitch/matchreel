@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your MatchReel is Ready!</title>
+  <title>Match Highlights Ready! ⚽</title>
   <meta property="og:title" content="Match Highlights Ready! ⚽">
   <meta property="og:description" content="Watch the highlights and share with friends">
   <style>
@@ -11,152 +11,222 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+      background: linear-gradient(135deg, #0a0f18 0%, #1a1a2e 100%);
       min-height: 100vh;
       color: #fff;
     }
     
-    .container { max-width: 500px; margin: 0 auto; padding: 30px 20px; }
-    
-    .header { text-align: center; margin-bottom: 25px; }
-    .logo { font-size: 1.5rem; font-weight: 800; }
-    .logo span { color: #00ff88; }
-    
-    .match-card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 20px;
+    /* HERO POSTER SECTION */
+    .hero-poster {
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      padding: 40px 20px;
+      text-align: center;
       overflow: hidden;
     }
     
-    .video-preview {
-      position: relative;
-      background: #000;
-      aspect-ratio: 16/9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .video-preview video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      cursor: pointer;
-    }
-    
-    .video-preview.locked::after {
+    .hero-poster::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      animation: movePattern 20s linear infinite;
     }
     
-    .lock-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 10;
+    @keyframes movePattern {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(30px, 30px); }
     }
     
-    .lock-icon {
-      font-size: 4rem;
-      margin-bottom: 15px;
+    .hero-content {
+      position: relative;
+      z-index: 1;
     }
     
-    .lock-text {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-    
-    .preview-badge {
+    .match-badge {
+      display: inline-block;
       background: rgba(255,255,255,0.2);
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     
-    .match-info {
-      padding: 25px;
+    .teams-display {
+      margin-bottom: 25px;
+    }
+    
+    .team-name {
+      font-size: 2rem;
+      font-weight: 800;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .vs-badge {
+      display: inline-block;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 20px;
+      border-radius: 20px;
+      margin: 15px 0;
+      font-weight: 700;
+    }
+    
+    .score-display {
+      font-size: 4rem;
+      font-weight: 900;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+      margin: 20px 0;
+      letter-spacing: 10px;
+    }
+    
+    .score-display .divider {
+      margin: 0 10px;
+      opacity: 0.7;
+    }
+    
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 25px;
+    }
+    
+    .stat-bubble {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 15px 25px;
+      border-radius: 15px;
       text-align: center;
     }
     
-    .teams {
-      font-size: 1.3rem;
+    .stat-bubble .icon { font-size: 1.5rem; }
+    .stat-bubble .value { font-size: 1.8rem; font-weight: 800; }
+    .stat-bubble .label { font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; }
+    
+    /* MAIN CONTENT */
+    .container { max-width: 500px; margin: 0 auto; padding: 30px 20px; }
+    
+    .cta-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .cta-title {
+      font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 10px;
     }
     
-    .teams .vs { color: #00ff88; margin: 0 10px; }
-    
-    .score {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: #00ff88;
-      margin: 15px 0;
-    }
-    
-    .score .divider { color: #8899a6; margin: 0 15px; }
-    
-    .match-date {
+    .cta-subtitle {
       color: #8899a6;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     
-    .highlights {
+    .clips-preview {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin: 20px 0;
+      gap: 8px;
+      margin-bottom: 25px;
       flex-wrap: wrap;
     }
     
-    .highlight-stat {
-      text-align: center;
+    .clip-tag {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
     }
     
-    .highlight-stat .icon { font-size: 1.5rem; }
-    .highlight-stat .value { font-weight: 700; color: #00ff88; }
-    .highlight-stat .label { font-size: 0.8rem; color: #8899a6; }
+    .clip-tag.goal { background: #00ff88; color: #0f1923; }
+    .clip-tag.tekkers { background: #ff6b6b; color: #0f1923; }
+    .clip-tag.pass { background: #3498db; color: #fff; }
+    .clip-tag.chance { background: #ffa502; color: #0f1923; }
+    .clip-tag.celebration { background: #ffd700; color: #0f1923; }
+    .clip-tag.siuuu { background: #ff69b4; color: #0f1923; }
+    .clip-tag.opp-goal { background: #ff0050; color: #fff; }
+    .clip-tag.save { background: #9b59b6; color: #fff; }
+    .clip-tag.skills { background: #e056fd; color: #0f1923; }
+    .clip-tag.tackle { background: #27ae60; color: #fff; }
     
-    .potm {
-      background: rgba(255,215,0,0.1);
-      border: 1px solid rgba(255,215,0,0.3);
-      padding: 15px;
+    /* Voucher Input */
+    .voucher-section {
+      margin-bottom: 20px;
+    }
+    
+    .voucher-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .voucher-input-row input {
+      flex: 1;
+      padding: 14px 18px;
       border-radius: 12px;
-      margin: 20px 0;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 600;
     }
     
-    .potm .label { color: #8899a6; font-size: 0.9rem; }
-    .potm .name { font-size: 1.2rem; font-weight: 700; color: #ffd700; }
+    .voucher-input-row input::placeholder {
+      color: #666;
+      text-transform: none;
+      font-weight: normal;
+    }
     
-    .btn {
-      width: 100%;
-      padding: 18px;
+    .voucher-input-row button {
+      padding: 14px 24px;
+      border-radius: 12px;
       border: none;
-      border-radius: 12px;
-      font-size: 1.2rem;
+      background: #ffa502;
+      color: #0f1923;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: transform 0.2s;
+    }
+    
+    .voucher-input-row button:hover { transform: scale(1.05); }
+    
+    #voucherMessage {
+      font-size: 0.9rem;
       margin-top: 10px;
+    }
+    
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 20px;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
     }
     
     .btn:hover { transform: scale(1.02); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     
     .btn-unlock {
-      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
       color: #0f1923;
+      box-shadow: 0 4px 15px rgba(0,255,136,0.4);
     }
     
     .btn-download {
-      background: #00ff88;
+      background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
       color: #0f1923;
     }
     
@@ -165,161 +235,186 @@
       color: #fff;
     }
     
-    .price-info {
-      text-align: center;
-      margin-top: 15px;
-      color: #8899a6;
-      font-size: 0.9rem;
+    .price-tag {
+      background: #ffd700;
+      color: #0f1923;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 1rem;
+      margin-left: 10px;
     }
     
+    .price-note {
+      color: #8899a6;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+    
+    /* Unlocked State */
     .unlocked-banner {
-      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
       color: #0f1923;
       text-align: center;
-      padding: 12px;
-      font-weight: 700;
-      display: none;
-    }
-    
-    .unlocked-banner.show { display: block; }
-    
-    .unlocked-by {
-      text-align: center;
-      color: #8899a6;
-      font-size: 0.9rem;
-      margin-top: 10px;
-    }
-    
-    .team-of-day {
-      margin: 20px 0;
       padding: 15px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
     }
     
-    .team-of-day h4 {
-      color: #00d4ff;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-    
-    .team-of-day .players {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    
-    .team-of-day .player {
-      background: rgba(255,255,255,0.1);
-      padding: 5px 12px;
+    .video-player {
+      background: #000;
       border-radius: 15px;
-      font-size: 0.85rem;
+      overflow: hidden;
+      margin-bottom: 20px;
     }
+    
+    .video-player video {
+      width: 100%;
+      display: block;
+    }
+    
+    /* POTM Section */
+    .potm-card {
+      background: linear-gradient(135deg, rgba(255,215,0,0.2) 0%, rgba(255,215,0,0.1) 100%);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .potm-card .label { color: #8899a6; font-size: 0.9rem; }
+    .potm-card .name { font-size: 1.4rem; font-weight: 800; color: #ffd700; margin-top: 5px; }
+    
+    /* Processing State */
+    .processing-animation {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    
+    .processing-animation .dot {
+      width: 12px;
+      height: 12px;
+      background: #00ff88;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    
+    .processing-animation .dot:nth-child(1) { animation-delay: -0.32s; }
+    .processing-animation .dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    #lockedState, #processingState, #unlockedState { display: none; }
+    #lockedState.show, #processingState.show, #unlockedState.show { display: block; }
   </style>
 </head>
 <body>
-  <div class="unlocked-banner" id="unlockedBanner">
-    ✓ UNLOCKED — Download & share!
+  <div class="unlocked-banner" id="unlockedBanner" style="display:none;">
+    🎉 UNLOCKED — Your highlights are ready!
+  </div>
+
+  <!-- HERO POSTER -->
+  <div class="hero-poster">
+    <div class="hero-content">
+      <div class="match-badge" id="competitionBadge">Match Highlights</div>
+      
+      <div class="teams-display">
+        <div class="team-name" id="teamName">Loading...</div>
+        <div class="vs-badge">VS</div>
+        <div class="team-name" id="opponent">...</div>
+      </div>
+      
+      <div class="score-display">
+        <span id="homeScore">0</span>
+        <span class="divider">-</span>
+        <span id="awayScore">0</span>
+      </div>
+      
+      <div class="stats-row">
+        <div class="stat-bubble">
+          <div class="icon">🎬</div>
+          <div class="value" id="clipCount">0</div>
+          <div class="label">Clips</div>
+        </div>
+        <div class="stat-bubble">
+          <div class="icon">⚽</div>
+          <div class="value" id="goalCount">0</div>
+          <div class="label">Goals</div>
+        </div>
+        <div class="stat-bubble">
+          <div class="icon">🔥</div>
+          <div class="value" id="highlightCount">0</div>
+          <div class="label">Highlights</div>
+        </div>
+      </div>
+    </div>
   </div>
   
   <div class="container">
-    <div class="header">
-      <h1 class="logo">⚽ Match<span>Reel</span></h1>
-    </div>
-    
-    <div class="match-card">
-      <div class="video-preview" id="videoPreview">
-        <video id="previewVideo" loop muted playsinline autoplay>
-          <source src="" type="video/mp4">
-        </video>
+    <!-- LOCKED STATE -->
+    <div id="lockedState" class="show">
+      <div class="cta-card">
+        <div class="cta-title">🎬 Highlights Ready!</div>
+        <div class="cta-subtitle">Unlock the full video for your team</div>
         
-        <div class="lock-overlay" id="lockOverlay">
-          <div class="lock-icon">🎬</div>
-          <div class="lock-text">Highlights ready to create!</div>
-          <div class="preview-badge" id="clipCountBadge">0 clips</div>
+        <div class="clips-preview" id="clipsPreview"></div>
+        
+        <div class="voucher-section">
+          <div class="voucher-input-row">
+            <input type="text" id="voucherCode" placeholder="Got a voucher code?">
+            <button onclick="applyVoucher()">Apply</button>
+          </div>
+          <p id="voucherMessage" style="display:none;"></p>
         </div>
+        
+        <button class="btn btn-unlock" onclick="unlockReel()">
+          🎬 Create Video <span class="price-tag" id="priceDisplay">£3</span>
+        </button>
+        
+        <p class="price-note">Pay once — whole team can watch & download!</p>
       </div>
       
-      <div class="match-info">
-        <div class="teams">
-          <span id="teamName">Team</span>
-          <span class="vs">vs</span>
-          <span id="opponent">Opponent</span>
-        </div>
-        
-        <div class="score">
-          <span id="homeScore">0</span>
-          <span class="divider">-</span>
-          <span id="awayScore">0</span>
-        </div>
-        
-        <div class="match-date" id="matchDate"></div>
-        
-        <div class="highlights">
-          <div class="highlight-stat">
-            <div class="icon">⚽</div>
-            <div class="value" id="goalCount">0</div>
-            <div class="label">Goals</div>
-          </div>
-          <div class="highlight-stat">
-            <div class="icon">🔥</div>
-            <div class="value" id="skillsCount">0</div>
-            <div class="label">Skills</div>
-          </div>
-          <div class="highlight-stat">
-            <div class="icon">🧤</div>
-            <div class="value" id="saveCount">0</div>
-            <div class="label">Saves</div>
-          </div>
-        </div>
-        
-        <div class="potm" id="potmSection" style="display:none;">
-          <div class="label">⭐ Player of the Match</div>
-          <div class="name" id="potmName"></div>
-        </div>
-        
-        <div class="team-of-day" id="todSection" style="display:none;">
-          <h4>🏆 Team of the Day</h4>
-          <div class="players" id="todPlayers"></div>
-        </div>
-        
-        <!-- Locked state -->
-        <div id="lockedButtons">
-          <!-- Voucher code input -->
-          <div style="margin-bottom: 15px;">
-            <div style="display: flex; gap: 10px;">
-              <input type="text" id="voucherCode" placeholder="Got a voucher code?" 
-                style="flex: 1; padding: 12px 15px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; text-transform: uppercase;">
-              <button onclick="applyVoucher()" style="padding: 12px 20px; border-radius: 8px; border: none; background: #ffa502; color: #0f1923; font-weight: 600; cursor: pointer;">Apply</button>
-            </div>
-            <p id="voucherMessage" style="font-size: 0.85rem; margin-top: 8px; display: none;"></p>
-          </div>
-          
-          <button class="btn btn-unlock" onclick="unlockReel()">
-            🎬 Create & Unlock — <span id="priceDisplay">£3</span>
-          </button>
-          <p class="price-info">Pay once, video created for the whole group to share!</p>
-        </div>
-        
-        <!-- Processing state -->
-        <div id="processingButtons" style="display:none;">
-          <button class="btn btn-unlock" disabled>
-            ⏳ Creating your video...
-          </button>
-          <p class="price-info">This takes 2-5 minutes. We'll update this page when ready!</p>
-        </div>
-        
-        <!-- Unlocked state -->
-        <div id="unlockedButtons" style="display:none;">
-          <button class="btn btn-download" onclick="downloadReel()">
-            ⬇️ Download Video
-          </button>
-          <button class="btn btn-share" onclick="shareReel()">
-            📤 Share
-          </button>
-          <p class="unlocked-by" id="unlockedBy"></p>
-        </div>
+      <div class="potm-card" id="potmSection" style="display:none;">
+        <div class="label">⭐ Player of the Match</div>
+        <div class="name" id="potmName"></div>
       </div>
+    </div>
+    
+    <!-- PROCESSING STATE -->
+    <div id="processingState">
+      <div class="cta-card">
+        <div class="cta-title">⏳ Creating Your Video...</div>
+        <div class="processing-animation">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="cta-subtitle">This takes 2-5 minutes. Don't close this page!</div>
+      </div>
+    </div>
+    
+    <!-- UNLOCKED STATE -->
+    <div id="unlockedState">
+      <div class="video-player">
+        <video id="reelVideo" controls playsinline>
+          <source src="" type="video/mp4">
+        </video>
+      </div>
+      
+      <button class="btn btn-download" onclick="downloadReel()">
+        ⬇️ Download Video
+      </button>
+      
+      <button class="btn btn-share" onclick="shareReel()">
+        📤 Share with Team
+      </button>
+      
+      <p class="price-note" id="unlockedBy"></p>
     </div>
   </div>
   
@@ -328,6 +423,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const justPaid = urlParams.get('paid') === 'true';
     let matchData = null;
+    let appliedVoucher = null;
+    let currentPrice = 3;
     
     async function loadMatch() {
       try {
@@ -346,7 +443,10 @@
     function renderMatch() {
       document.getElementById('teamName').textContent = matchData.teamName;
       document.getElementById('opponent').textContent = matchData.opponent;
-      document.getElementById('matchDate').textContent = formatDate(matchData.matchDate);
+      
+      if (matchData.competition) {
+        document.getElementById('competitionBadge').textContent = matchData.competition;
+      }
       
       if (matchData.score) {
         document.getElementById('homeScore').textContent = matchData.score.home;
@@ -354,20 +454,27 @@
       }
       
       const clips = matchData.clips || [];
-      document.getElementById('goalCount').textContent = clips.filter(c => c.type === 'goal').length;
-      document.getElementById('skillsCount').textContent = clips.filter(c => c.type === 'skills').length;
-      document.getElementById('saveCount').textContent = clips.filter(c => c.type === 'save').length;
-      document.getElementById('clipCountBadge').textContent = `${clips.length} clips`;
+      const goals = clips.filter(c => c.type === 'goal').length;
+      const highlights = clips.filter(c => ['tekkers', 'skills', 'celebration', 'siuuu'].includes(c.type)).length;
+      
+      document.getElementById('clipCount').textContent = clips.length;
+      document.getElementById('goalCount').textContent = goals;
+      document.getElementById('highlightCount').textContent = highlights;
+      
+      // Render clip tags preview
+      const clipTypes = {};
+      clips.forEach(c => {
+        clipTypes[c.type] = (clipTypes[c.type] || 0) + 1;
+      });
+      
+      const previewHtml = Object.entries(clipTypes).map(([type, count]) => 
+        `<span class="clip-tag ${type}">${count}x ${type.replace('-', ' ')}</span>`
+      ).join('');
+      document.getElementById('clipsPreview').innerHTML = previewHtml || '<span style="color:#666">No clips yet</span>';
       
       if (matchData.playerOfMatch) {
         document.getElementById('potmSection').style.display = 'block';
         document.getElementById('potmName').textContent = matchData.playerOfMatch;
-      }
-      
-      if (matchData.teamOfDay?.length > 0) {
-        document.getElementById('todSection').style.display = 'block';
-        document.getElementById('todPlayers').innerHTML = matchData.teamOfDay
-          .map(p => `<span class="player">${p}</span>`).join('');
       }
       
       // Check status
@@ -377,88 +484,53 @@
         } else if (matchData.status === 'processing') {
           showProcessing();
         } else {
-          // Unlocked but not started - trigger generation
           triggerGeneration();
         }
       } else if (justPaid) {
-        // Just returned from Stripe - wait a moment for webhook, then check again
         showProcessing();
-        document.querySelector('#processingButtons .price-info').textContent = 'Processing payment...';
-        setTimeout(async () => {
-          await loadMatch();
-          // If still not unlocked after 5s, poll
-          if (!matchData.unlocked) {
-            pollForUnlock();
-          }
-        }, 3000);
+        setTimeout(() => loadMatch(), 3000);
       } else if (matchData.status === 'processing') {
         showProcessing();
-      } else if (matchData.status === 'complete' && matchData.unlocked) {
-        showUnlocked();
-      }
-      
-      // Load preview video if available
-      if (matchData.previewUrl) {
-        document.getElementById('previewVideo').src = matchData.previewUrl;
-        document.getElementById('previewVideo').play();
       }
     }
     
-    function formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString('en-GB', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
+    function showState(state) {
+      ['lockedState', 'processingState', 'unlockedState'].forEach(id => {
+        document.getElementById(id).classList.remove('show');
       });
+      document.getElementById(state + 'State').classList.add('show');
     }
     
     function showProcessing() {
-      document.getElementById('lockOverlay').innerHTML = `
-        <div class="lock-icon">⏳</div>
-        <div class="lock-text">Creating your video...</div>
-        <div class="preview-badge">2-5 minutes</div>
-      `;
-      document.getElementById('lockedButtons').style.display = 'none';
-      document.getElementById('processingButtons').style.display = 'block';
-      
-      // Poll for completion
-      setTimeout(() => loadMatch(), 10000);
+      showState('processing');
+      pollForVideo();
     }
     
     function showUnlocked() {
-      document.getElementById('unlockedBanner').classList.add('show');
-      document.getElementById('lockOverlay').style.display = 'none';
-      document.getElementById('videoPreview').classList.remove('locked');
-      document.getElementById('lockedButtons').style.display = 'none';
-      document.getElementById('unlockedButtons').style.display = 'block';
+      document.getElementById('unlockedBanner').style.display = 'block';
+      showState('unlocked');
       
-      // Load and autoplay the video
-      const video = document.getElementById('previewVideo');
+      const video = document.getElementById('reelVideo');
       video.src = `/api/matches/${matchId}/download`;
-      video.muted = false;
-      video.play();
       
       if (matchData.unlockedBy) {
         document.getElementById('unlockedBy').textContent = `Unlocked by ${matchData.unlockedBy}`;
       }
     }
     
-    let appliedVoucher = null;
-    let currentPrice = 3;
-    
     async function applyVoucher() {
       const code = document.getElementById('voucherCode').value.trim().toUpperCase();
       const msgEl = document.getElementById('voucherMessage');
       
       if (!code) {
-        msgEl.textContent = 'Please enter a voucher code';
+        msgEl.textContent = 'Enter a voucher code';
         msgEl.style.color = '#ff4757';
         msgEl.style.display = 'block';
         return;
       }
       
       try {
-        const res = await fetch(`/api/vouchers/validate`, {
+        const res = await fetch('/api/vouchers/validate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code, matchId })
@@ -471,34 +543,31 @@
           currentPrice = data.newPrice;
           
           if (data.discount === 100) {
-            msgEl.innerHTML = '🎉 <strong>FREE VIDEO!</strong> Code applied';
+            msgEl.innerHTML = '🎉 <strong>FREE!</strong> Code applied';
             document.getElementById('priceDisplay').textContent = 'FREE';
           } else {
-            msgEl.innerHTML = `✓ ${data.discount}% off applied!`;
+            msgEl.innerHTML = `✓ ${data.discount}% off!`;
             document.getElementById('priceDisplay').textContent = `£${data.newPrice}`;
           }
           msgEl.style.color = '#00ff88';
-          
           document.getElementById('voucherCode').disabled = true;
         } else {
-          msgEl.textContent = data.error || 'Invalid voucher code';
+          msgEl.textContent = data.error || 'Invalid code';
           msgEl.style.color = '#ff4757';
         }
         msgEl.style.display = 'block';
-        
       } catch (err) {
-        msgEl.textContent = 'Failed to validate code';
+        msgEl.textContent = 'Error validating code';
         msgEl.style.color = '#ff4757';
         msgEl.style.display = 'block';
       }
     }
     
     async function unlockReel() {
-      // If voucher makes it free, unlock and generate
       if (appliedVoucher && appliedVoucher.discount === 100) {
+        // Free with voucher
         try {
-          // Unlock with voucher
-          const unlockRes = await fetch(`/api/matches/${matchId}/unlock`, {
+          await fetch(`/api/matches/${matchId}/unlock`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -506,102 +575,54 @@
               unlockedBy: 'Voucher: ' + appliedVoucher.code
             })
           });
-          
-          const unlockData = await unlockRes.json();
-          if (!unlockData.success) {
-            alert('Error: ' + unlockData.error);
-            return;
-          }
-          
-          // Now trigger video generation
-          await triggerGeneration();
-          
+          triggerGeneration();
         } catch (err) {
-          alert('Failed to unlock: ' + err.message);
+          alert('Error: ' + err.message);
         }
         return;
       }
       
-      // Create Stripe checkout session and redirect
+      // Stripe checkout
       try {
         const res = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            matchId,
-            voucherCode: appliedVoucher?.code || null
-          })
+          body: JSON.stringify({ matchId, voucherCode: appliedVoucher?.code })
         });
         
         const data = await res.json();
-        
         if (data.success && data.url) {
-          // Redirect to Stripe Checkout
           window.location.href = data.url;
         } else {
-          alert('Payment error: ' + (data.error || 'Unknown error'));
+          alert('Payment error: ' + (data.error || 'Unknown'));
         }
       } catch (err) {
-        alert('Failed to start checkout: ' + err.message);
+        alert('Checkout failed: ' + err.message);
       }
     }
     
     async function triggerGeneration() {
-      // Show processing state
       showProcessing();
       
       try {
-        // Trigger video generation
-        const genRes = await fetch(`/api/matches/${matchId}/generate-public`, {
+        await fetch(`/api/matches/${matchId}/generate-public`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ matchId })
+          headers: { 'Content-Type': 'application/json' }
         });
-        
-        const genData = await genRes.json();
-        if (genData.success) {
-          // Poll for completion
-          pollForVideo();
-        } else {
-          alert('Generation failed: ' + genData.error);
-          location.reload();
-        }
+        pollForVideo();
       } catch (err) {
-        alert('Failed to start generation: ' + err.message);
-        location.reload();
+        console.error('Generation error:', err);
       }
     }
     
-    function pollForUnlock() {
-      const checkUnlock = async () => {
-        try {
-          const res = await fetch(`/api/matches/${matchId}`);
-          const data = await res.json();
-          
-          if (data.match?.unlocked) {
-            matchData = data.match;
-            // Now trigger video generation
-            triggerGeneration();
-            return;
-          }
-          
-          // Keep polling
-          setTimeout(checkUnlock, 2000);
-        } catch (err) {
-          setTimeout(checkUnlock, 2000);
-        }
-      };
-      
-      checkUnlock();
-    }
-    
     function pollForVideo() {
-      const checkStatus = async () => {
+      const check = async () => {
         try {
           const res = await fetch(`/api/matches/${matchId}/status`);
           const data = await res.json();
           
           if (data.status === 'complete') {
+            matchData.status = 'complete';
             showUnlocked();
             return;
           } else if (data.status === 'failed') {
@@ -609,21 +630,13 @@
             location.reload();
             return;
           }
-          
-          // Keep polling
-          setTimeout(checkStatus, 5000);
+          setTimeout(check, 5000);
         } catch (err) {
-          setTimeout(checkStatus, 5000);
+          setTimeout(check, 5000);
         }
       };
-      
-      setTimeout(checkStatus, 3000);
+      setTimeout(check, 3000);
     }
-    
-    // Allow Enter key to apply voucher
-    document.getElementById('voucherCode')?.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') applyVoucher();
-    });
     
     function downloadReel() {
       window.location.href = `/api/matches/${matchId}/download`;
@@ -631,7 +644,7 @@
     
     function shareReel() {
       const url = window.location.href;
-      const text = `Check out our match highlights! ${matchData.teamName} vs ${matchData.opponent}`;
+      const text = `Check out our match highlights! ${matchData.teamName} vs ${matchData.opponent} ⚽🎬`;
       
       if (navigator.share) {
         navigator.share({ title: 'MatchReel', text, url });
@@ -640,6 +653,10 @@
         alert('Link copied!');
       }
     }
+    
+    document.getElementById('voucherCode')?.addEventListener('keypress', e => {
+      if (e.key === 'Enter') applyVoucher();
+    });
     
     loadMatch();
   </script>
