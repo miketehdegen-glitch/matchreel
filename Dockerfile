@@ -1,11 +1,15 @@
 # Use Node.js with Debian for apt-get
 FROM node:20-bookworm-slim
 
-# Install FFmpeg and Chromium dependencies
+# Install FFmpeg, Chromium, and fonts (including emoji support)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     chromium \
     fonts-liberation \
+    fonts-noto-color-emoji \
+    fonts-noto-cjk \
+    fonts-freefont-ttf \
+    fontconfig \
     libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
