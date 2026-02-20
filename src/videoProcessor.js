@@ -85,25 +85,32 @@ class VideoProcessor {
   // Reduced resolution to 720p to save memory on Railway
   async normalizeClip(inputPath, outputPath) {
     const args = [
+      // INPUT OPTIONS (before -i) - limit decode memory
+      '-threads', '1',                     // Single-threaded decode (HEVC memory fix)
+      '-hwaccel', 'none',                  // Force software decode (predictable memory)
       '-i', inputPath,
+      // OUTPUT OPTIONS
       '-vsync', 'cfr',                    // Convert variable frame rate to constant
       '-r', '30',                          // Force 30fps output
       '-vf', 'scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2,setsar=1',
       '-c:v', 'libx264',
-      '-preset', 'veryfast',              // Faster encoding, less memory
-      '-crf', '26',                        // Slightly lower quality, smaller files
+      '-preset', 'ultrafast',             // Fastest encoding, lowest memory
+      '-tune', 'fastdecode',              // Optimize for fast playback
+      '-crf', '28',                        // Lower quality = less memory during encode
+      '-bufsize', '2M',                    // Limit encoder buffer
+      '-maxrate', '2M',                    // Limit bitrate
       '-pix_fmt', 'yuv420p',              // Ensure compatible pixel format
       '-c:a', 'aac',
       '-b:a', '96k',                       // Lower audio bitrate
       '-ar', '44100',
       '-ac', '2',
-      '-max_muxing_queue_size', '1024',   // Prevent buffer overflow
+      '-max_muxing_queue_size', '512',    // Reduced buffer
       '-movflags', '+faststart',          // Optimize for streaming
-      '-threads', '2',                     // Limit CPU threads
+      '-threads', '1',                     // Single-threaded encode too
       '-y',
       outputPath
     ];
-    await this.runFFmpeg(args, 120000);   // 2 min timeout per clip
+    await this.runFFmpeg(args, 180000);   // 3 min timeout (slower with 1 thread)
   }
 
   // Create slow-mo version of a clip (0.5x speed)
