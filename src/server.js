@@ -146,6 +146,7 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
+app.use('/uploads', express.static(UPLOADS_DIR));  // Serve uploaded files
 
 // ============ ROUTES ============
 
