@@ -1105,6 +1105,75 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
+// Diagnostic endpoint - check FFmpeg, memory, files
+app.get('/api/diagnostic', async (req, res) => {
+  const { execSync, spawn } = require('child_process');
+  const results = {
+    time: new Date().toISOString(),
+    memory: process.memoryUsage(),
+    ffmpeg: null,
+    chromium: null,
+    uploads: null,
+    output: null,
+    matches: null
+  };
+  
+  // Check FFmpeg
+  try {
+    const ffmpegPath = process.platform === 'win32' 
+      ? 'C:/Users/micha/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe'
+      : '/usr/bin/ffmpeg';
+    const version = execSync(`${ffmpegPath} -version 2>&1`).toString().split('\n')[0];
+    results.ffmpeg = { status: 'ok', version, path: ffmpegPath };
+  } catch (err) {
+    results.ffmpeg = { status: 'error', error: err.message };
+  }
+  
+  // Check Chromium (for Puppeteer)
+  try {
+    const chromium = execSync('which chromium || which google-chrome || echo "not found"').toString().trim();
+    results.chromium = { status: chromium !== 'not found' ? 'ok' : 'error', path: chromium };
+  } catch (err) {
+    results.chromium = { status: 'error', error: err.message };
+  }
+  
+  // Check uploads directory
+  try {
+    const uploads = fs.readdirSync(UPLOADS_DIR);
+    results.uploads = { status: 'ok', count: uploads.length, items: uploads.slice(0, 10) };
+  } catch (err) {
+    results.uploads = { status: 'error', error: err.message };
+  }
+  
+  // Check output directory  
+  try {
+    const output = fs.readdirSync(OUTPUT_DIR);
+    results.output = { status: 'ok', count: output.length, items: output.slice(0, 10) };
+  } catch (err) {
+    results.output = { status: 'error', error: err.message };
+  }
+  
+  // Check matches data
+  try {
+    const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const matchIds = Object.keys(data.matches || {});
+    results.matches = { 
+      status: 'ok', 
+      count: matchIds.length,
+      recent: matchIds.slice(-5).map(id => ({
+        id,
+        status: data.matches[id].status,
+        team: data.matches[id].teamName,
+        clips: (data.matches[id].clips || []).length
+      }))
+    };
+  } catch (err) {
+    results.matches = { status: 'error', error: err.message };
+  }
+  
+  res.json(results);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`
