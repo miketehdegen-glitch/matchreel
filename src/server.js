@@ -180,6 +180,16 @@ app.get('/reel/:matchId', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/reel.html'));
 });
 
+// Clips gallery (public - linked from WhatsApp)
+app.get('/clips/:matchId', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/clips.html'));
+});
+
+// WhatsApp poster generator
+app.get('/poster/:matchId', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/poster.html'));
+});
+
 // ============ API ============
 
 // Logo upload config
@@ -270,10 +280,50 @@ app.get('/api/matches/:matchId', (req, res) => {
       return res.status(404).json({ success: false, error: 'Match not found' });
     }
     
-    // Don't expose admin token to public
-    const { adminToken, ...publicMatch } = match;
+    // Don't expose admin token or raw nominations to public
+    const { adminToken, potmNominations, ...publicMatch } = match;
     
     res.json({ success: true, match: publicMatch });
+    
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Get match with admin details (including POTM nominations)
+app.get('/api/matches/:matchId/admin', (req, res) => {
+  try {
+    const { token } = req.query;
+    const data = loadData();
+    const match = data.matches[req.params.matchId];
+    
+    if (!match) {
+      return res.status(404).json({ success: false, error: 'Match not found' });
+    }
+    
+    if (match.adminToken !== token) {
+      return res.status(403).json({ success: false, error: 'Invalid admin token' });
+    }
+    
+    // Count POTM nominations
+    const nominations = match.potmNominations || [];
+    const voteCounts = {};
+    nominations.forEach(n => {
+      const name = n.name.toLowerCase().trim();
+      voteCounts[name] = (voteCounts[name] || 0) + 1;
+    });
+    
+    // Sort by votes
+    const sortedVotes = Object.entries(voteCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => ({ name, count }));
+    
+    res.json({ 
+      success: true, 
+      match,
+      potmVotes: sortedVotes,
+      totalVotes: nominations.length
+    });
     
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

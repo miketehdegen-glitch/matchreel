@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Match Highlights">
+  <meta property="og:description" content="Watch all the clips from the match">
+  <meta property="og:type" content="website">
+  <title>Match Clips - MatchReel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .match-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    
+    .vs { color: #00ff88; }
+    
+    .match-meta {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    
+    .score-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(0,0,0,0.3);
+      padding: 15px 30px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    
+    .score-num {
+      font-size: 48px;
+      font-weight: 800;
+    }
+    
+    .score-divider {
+      font-size: 32px;
+      color: rgba(255,255,255,0.3);
+    }
+    
+    .potm-badge {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
+    }
+    
+    .potm-badge span {
+      font-weight: 800;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 30px 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .clip-count {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .clips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    @media (min-width: 600px) {
+      .clips-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .clip-card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .clip-card:hover {
+      transform: scale(1.03);
+    }
+    
+    .clip-thumb {
+      aspect-ratio: 9/16;
+      background: #000;
+      position: relative;
+    }
+    
+    .clip-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .clip-type-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .clip-type-badge.goal { background: #00ff88; color: #000; }
+    .clip-type-badge.save { background: #00d4ff; color: #000; }
+    .clip-type-badge.skills { background: #ffd700; color: #000; }
+    .clip-type-badge.chance { background: #ff9500; color: #000; }
+    .clip-type-badge.celebration { background: #ff2d55; color: #fff; }
+    
+    .clip-info {
+      padding: 10px;
+    }
+    
+    .clip-player {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    .clip-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .no-clips {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .no-clips-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    
+    /* Video modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .modal-video {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 12px;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+    }
+    
+    .footer a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+    
+    .team-photo-section {
+      margin: 20px 0;
+    }
+    
+    .team-photo {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="match-title">
+      <span id="teamName">Loading...</span>
+      <span class="vs">vs</span>
+      <span id="opponent"></span>
+    </div>
+    <div class="match-meta" id="matchMeta"></div>
+    
+    <div class="score-display" id="scoreDisplay" style="display:none">
+      <span class="score-num" id="homeScore">0</span>
+      <span class="score-divider">-</span>
+      <span class="score-num" id="awayScore">0</span>
+    </div>
+    
+    <div id="potmBadge" style="display:none">
+      <div class="potm-badge">⭐ Player of the Match: <span id="potmName"></span></div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div id="teamPhotoSection" class="team-photo-section" style="display:none">
+      <img id="teamPhoto" class="team-photo" src="" alt="Team photo">
+    </div>
+    
+    <!-- Goals -->
+    <div id="goalsSection" style="display:none">
+      <div class="section-title">⚽ Goals <span class="clip-count" id="goalCount">0</span></div>
+      <div class="clips-grid" id="goalsGrid"></div>
+    </div>
+    
+    <!-- Saves -->
+    <div id="savesSection" style="display:none">
+      <div class="section-title">🧤 Saves <span class="clip-count" id="saveCount">0</span></div>
+      <div class="clips-grid" id="savesGrid"></div>
+    </div>
+    
+    <!-- Skills -->
+    <div id="skillsSection" style="display:none">
+      <div class="section-title">✨ Skills <span class="clip-count" id="skillsCount">0</span></div>
+      <div class="clips-grid" id="skillsGrid"></div>
+    </div>
+    
+    <!-- Chances -->
+    <div id="chancesSection" style="display:none">
+      <div class="section-title">🎯 Chances <span class="clip-count" id="chanceCount">0</span></div>
+      <div class="clips-grid" id="chancesGrid"></div>
+    </div>
+    
+    <!-- Celebrations -->
+    <div id="celebrationsSection" style="display:none">
+      <div class="section-title">🎉 Celebrations <span class="clip-count" id="celebrationCount">0</span></div>
+      <div class="clips-grid" id="celebrationsGrid"></div>
+    </div>
+    
+    <div id="noClips" class="no-clips">
+      <div class="no-clips-icon">📭</div>
+      <p>No clips uploaded yet</p>
+    </div>
+  </div>
+  
+  <div class="footer">
+    Made with <a href="/">⚽ MatchReel</a>
+  </div>
+  
+  <!-- Video modal -->
+  <div class="modal" id="videoModal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <video class="modal-video" id="modalVideo" controls></video>
+  </div>
+
+  <script>
+    let matchId = window.location.pathname.split('/').filter(Boolean).pop();
+    let matchData = null;
+    
+    async function loadMatch() {
+      try {
+        const resp = await fetch(`/api/matches/${matchId}`);
+        if (!resp.ok) throw new Error('Not found');
+        
+        const data = await resp.json();
+        matchData = data.match || data;
+        
+        renderMatch();
+      } catch (err) {
+        console.error(err);
+        document.querySelector('.header').innerHTML = '<p style="padding:40px">Match not found</p>';
+      }
+    }
+    
+    function renderMatch() {
+      document.getElementById('teamName').textContent = matchData.teamName;
+      document.getElementById('opponent').textContent = matchData.opponent;
+      
+      const date = new Date(matchData.matchDate);
+      let meta = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      if (matchData.competition) meta += ` • ${matchData.competition}`;
+      document.getElementById('matchMeta').textContent = meta;
+      
+      // Score
+      if (matchData.score) {
+        document.getElementById('scoreDisplay').style.display = 'inline-flex';
+        document.getElementById('homeScore').textContent = matchData.score.home;
+        document.getElementById('awayScore').textContent = matchData.score.away;
+      }
+      
+      // POTM
+      if (matchData.playerOfMatch) {
+        document.getElementById('potmBadge').style.display = 'block';
+        document.getElementById('potmName').textContent = matchData.playerOfMatch;
+      }
+      
+      // Team photo
+      if (matchData.teamPhotoFilename) {
+        document.getElementById('teamPhotoSection').style.display = 'block';
+        document.getElementById('teamPhoto').src = `/uploads/${matchId}/${matchData.teamPhotoFilename}`;
+      }
+      
+      // Clips
+      const clips = matchData.clips || [];
+      if (clips.length === 0) {
+        document.getElementById('noClips').style.display = 'block';
+        return;
+      }
+      
+      document.getElementById('noClips').style.display = 'none';
+      
+      const goals = clips.filter(c => c.type === 'goal');
+      const saves = clips.filter(c => c.type === 'save');
+      const skills = clips.filter(c => c.type === 'skills');
+      const chances = clips.filter(c => c.type === 'chance');
+      const celebrations = clips.filter(c => c.type === 'celebration');
+      
+      if (goals.length) renderClips('goals', goals);
+      if (saves.length) renderClips('saves', saves);
+      if (skills.length) renderClips('skills', skills);
+      if (chances.length) renderClips('chances', chances);
+      if (celebrations.length) renderClips('celebrations', celebrations);
+    }
+    
+    function renderClips(type, clips) {
+      document.getElementById(`${type}Section`).style.display = 'block';
+      document.getElementById(`${type.replace('s','')}Count`).textContent = clips.length;
+      
+      const grid = document.getElementById(`${type}Grid`);
+      grid.innerHTML = clips.map(clip => `
+        <div class="clip-card" onclick="playClip('${clip.filename}')">
+          <div class="clip-thumb">
+            <video src="/uploads/${matchId}/${clip.filename}" muted preload="metadata"></video>
+            <span class="clip-type-badge ${clip.type}">${getTypeLabel(clip.type)}</span>
+          </div>
+          <div class="clip-info">
+            <div class="clip-player">${clip.scorer || 'Unknown'}</div>
+            <div class="clip-meta">${clip.type}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function getTypeLabel(type) {
+      const labels = {
+        goal: '⚽ GOAL',
+        save: '🧤 SAVE',
+        skills: '✨ SKILLS',
+        chance: '🎯 CHANCE',
+        celebration: '🎉'
+      };
+      return labels[type] || type;
+    }
+    
+    function playClip(filename) {
+      const video = document.getElementById('modalVideo');
+      video.src = `/uploads/${matchId}/${filename}`;
+      document.getElementById('videoModal').classList.add('active');
+      video.play();
+    }
+    
+    function closeModal() {
+      const video = document.getElementById('modalVideo');
+      video.pause();
+      video.src = '';
+      document.getElementById('videoModal').classList.remove('active');
+    }
+    
+    // Close modal on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+    
+    loadMatch();
+  </script>
+</body>
+</html>

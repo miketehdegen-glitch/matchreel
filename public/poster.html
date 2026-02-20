@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Poster - MatchReel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      color: #fff;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .poster-preview {
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    
+    /* The actual poster canvas */
+    #posterCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .btn:hover {
+      transform: scale(1.02);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #00ff88, #00cc6a);
+      color: #000;
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    
+    .share-text {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+    }
+    
+    .share-text label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .share-text textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 14px;
+      resize: none;
+      height: 120px;
+    }
+    
+    .copy-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #00d4ff;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 WhatsApp Poster</h1>
+    
+    <div id="loading" class="loading">Loading match...</div>
+    
+    <div id="posterSection" style="display:none">
+      <div class="poster-preview">
+        <canvas id="posterCanvas" width="1080" height="1350"></canvas>
+      </div>
+      
+      <div class="actions">
+        <button class="btn btn-primary" onclick="downloadPoster()">📥 Download</button>
+        <button class="btn btn-secondary" onclick="sharePoster()">📤 Share</button>
+      </div>
+      
+      <div class="share-text">
+        <label>Copy this message for WhatsApp:</label>
+        <textarea id="shareMessage" readonly></textarea>
+        <button class="copy-btn" onclick="copyMessage()">📋 Copy Message</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let matchId = new URLSearchParams(window.location.search).get('m') || 
+                  window.location.pathname.split('/').filter(Boolean).pop();
+    let matchData = null;
+    
+    async function loadMatch() {
+      try {
+        const resp = await fetch(`/api/matches/${matchId}`);
+        if (!resp.ok) throw new Error('Not found');
+        
+        const data = await resp.json();
+        matchData = data.match || data;
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('posterSection').style.display = 'block';
+        
+        generatePoster();
+        generateShareMessage();
+        
+      } catch (err) {
+        document.getElementById('loading').innerHTML = 'Match not found';
+      }
+    }
+    
+    function generatePoster() {
+      const canvas = document.getElementById('posterCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      
+      const colors = matchData.colors || { primary: '#0099cc', secondary: '#00ccff' };
+      
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, w, h);
+      gradient.addColorStop(0, colors.primary);
+      gradient.addColorStop(1, colors.secondary);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+      
+      // Diagonal stripes
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 60;
+      for (let i = -h; i < w + h; i += 120) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + h, h);
+        ctx.stroke();
+      }
+      
+      // Dark overlay at bottom
+      const bottomGradient = ctx.createLinearGradient(0, h * 0.6, 0, h);
+      bottomGradient.addColorStop(0, 'rgba(0,0,0,0)');
+      bottomGradient.addColorStop(1, 'rgba(0,0,0,0.7)');
+      ctx.fillStyle = bottomGradient;
+      ctx.fillRect(0, 0, w, h);
+      
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fff';
+      
+      // "FULL TIME" label
+      ctx.font = 'bold 36px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.fillText('FULL TIME', w/2, 150);
+      
+      // Team names
+      ctx.font = 'bold 56px Arial, sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(matchData.teamName, w/2, 280);
+      
+      // Score
+      const score = matchData.score || { home: 0, away: 0 };
+      ctx.font = 'bold 180px Arial, sans-serif';
+      ctx.fillText(`${score.home} - ${score.away}`, w/2, 500);
+      
+      // Opponent
+      ctx.font = 'bold 56px Arial, sans-serif';
+      ctx.fillText(matchData.opponent, w/2, 620);
+      
+      // Competition/Date
+      ctx.font = '32px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      const date = new Date(matchData.matchDate).toLocaleDateString('en-GB', { 
+        day: 'numeric', month: 'long', year: 'numeric' 
+      });
+      ctx.fillText(matchData.competition || date, w/2, 700);
+      
+      // POTM section
+      if (matchData.playerOfMatch) {
+        // Gold banner
+        ctx.fillStyle = 'rgba(255,215,0,0.9)';
+        ctx.fillRect(0, 850, w, 180);
+        
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 32px Arial, sans-serif';
+        ctx.fillText('⭐ PLAYER OF THE MATCH ⭐', w/2, 910);
+        
+        ctx.font = 'bold 64px Arial, sans-serif';
+        ctx.fillText(matchData.playerOfMatch, w/2, 990);
+      }
+      
+      // Goals summary
+      const goals = (matchData.clips || []).filter(c => c.type === 'goal');
+      if (goals.length > 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = '28px Arial, sans-serif';
+        const scorers = goals.map(g => g.scorer).filter(Boolean).join(', ');
+        if (scorers) {
+          ctx.fillText(`⚽ ${scorers}`, w/2, 1100);
+        }
+      }
+      
+      // Footer
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '24px Arial, sans-serif';
+      ctx.fillText('📹 Watch all the clips at matchreel.fun', w/2, 1280);
+      
+      // MatchReel branding
+      ctx.font = 'bold 28px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillText('⚽ MatchReel', w/2, 1330);
+    }
+    
+    function generateShareMessage() {
+      const score = matchData.score || { home: 0, away: 0 };
+      const goals = (matchData.clips || []).filter(c => c.type === 'goal');
+      const scorers = goals.map(g => g.scorer).filter(Boolean);
+      
+      let message = `⚽ *FULL TIME*\n\n`;
+      message += `*${matchData.teamName}* ${score.home} - ${score.away} *${matchData.opponent}*\n\n`;
+      
+      if (scorers.length > 0) {
+        message += `⚽ Goals: ${scorers.join(', ')}\n\n`;
+      }
+      
+      if (matchData.playerOfMatch) {
+        message += `⭐ *Player of the Match:* ${matchData.playerOfMatch}\n\n`;
+      }
+      
+      message += `📹 Watch all the clips:\n`;
+      message += `${window.location.origin}/clips/${matchId}`;
+      
+      document.getElementById('shareMessage').value = message;
+    }
+    
+    function downloadPoster() {
+      const canvas = document.getElementById('posterCanvas');
+      const link = document.createElement('a');
+      link.download = `${matchData.teamName}-vs-${matchData.opponent}-result.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    
+    async function sharePoster() {
+      const canvas = document.getElementById('posterCanvas');
+      
+      try {
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], 'match-result.png', { type: 'image/png' });
+          
+          if (navigator.share && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `${matchData.teamName} vs ${matchData.opponent}`,
+              text: document.getElementById('shareMessage').value
+            });
+          } else {
+            // Fallback - just download
+            downloadPoster();
+          }
+        }, 'image/png');
+      } catch (err) {
+        console.error('Share failed:', err);
+        downloadPoster();
+      }
+    }
+    
+    function copyMessage() {
+      const textarea = document.getElementById('shareMessage');
+      textarea.select();
+      document.execCommand('copy');
+      
+      const btn = event.target;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy Message', 2000);
+    }
+    
+    loadMatch();
+  </script>
+</body>
+</html>
