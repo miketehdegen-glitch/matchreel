@@ -320,12 +320,34 @@
     
     /* POTM HERO STYLES */
     .hero-potm {
-      background: linear-gradient(135deg, #1a1a2e 0%, #ffd700 50%, #ff6b6b 100%) !important;
+      background: linear-gradient(135deg, #0a1612 0%, #0d2818 30%, #0f3d28 60%, #0a2a2a 100%) !important;
       padding: 50px 20px !important;
     }
     
+    .hero-potm.team-blue { background: linear-gradient(135deg, #0a1225 0%, #1a3a6e 50%, #2563eb 100%) !important; }
+    .hero-potm.team-red { background: linear-gradient(135deg, #1a0a0a 0%, #6e1a1a 50%, #dc2626 100%) !important; }
+    .hero-potm.team-green { background: linear-gradient(135deg, #0a1a0a 0%, #1a6e2a 50%, #16a34a 100%) !important; }
+    .hero-potm.team-orange { background: linear-gradient(135deg, #1a120a 0%, #8a4a0a 50%, #ea580c 100%) !important; }
+    .hero-potm.team-yellow { background: linear-gradient(135deg, #1a1a0a 0%, #6e5a0a 50%, #ca8a04 100%) !important; }
+    .hero-potm.team-purple { background: linear-gradient(135deg, #120a1a 0%, #4a1a6e 50%, #9333ea 100%) !important; }
+    .hero-potm.team-pink { background: linear-gradient(135deg, #1a0a12 0%, #6e1a4a 50%, #ec4899 100%) !important; }
+    .hero-potm.team-teal { background: linear-gradient(135deg, #0a1a1a 0%, #0a5a5a 50%, #14b8a6 100%) !important; }
+    .hero-potm.team-black-gold { background: linear-gradient(135deg, #0a0a0a 0%, #2a2a0a 50%, #3a3a0a 100%) !important; }
+    .hero-potm.team-black-white { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #333 100%) !important; }
+    .hero-potm.team-black-red { background: linear-gradient(135deg, #0a0a0a 0%, #2a0a0a 50%, #4a1a1a 100%) !important; }
+    .hero-potm.team-navy-gold { background: linear-gradient(135deg, #0a0a1a 0%, #1a2a4a 50%, #1e3a5f 100%) !important; }
+    .hero-potm.team-red-white { background: linear-gradient(135deg, #1a0a0a 0%, #4a1a1a 50%, #8b2a2a 100%) !important; }
+    .hero-potm.team-blue-white { background: linear-gradient(135deg, #0a1225 0%, #1a3a6e 50%, #2563eb 100%) !important; }
+    .hero-potm.team-green-white { background: linear-gradient(135deg, #0a1a0a 0%, #1a4a1a 50%, #16a34a 100%) !important; }
+    .hero-potm.team-claret-blue { background: linear-gradient(135deg, #1a0a12 0%, #5a1a3a 50%, #7a2a5a 100%) !important; }
+    .hero-potm.team-red-blue { background: linear-gradient(135deg, #1a0a0a 0%, #3a1a3a 50%, #4a2a5a 100%) !important; }
+    .hero-potm.team-maroon-gold { background: linear-gradient(135deg, #1a0a0a 0%, #4a1a1a 50%, #6a2a2a 100%) !important; }
+    .hero-potm.team-pink-black { background: linear-gradient(135deg, #1a0a12 0%, #4a1a3a 50%, #6a2a5a 100%) !important; }
+    .hero-potm.team-green-yellow { background: linear-gradient(135deg, #0a1a0a 0%, #2a4a1a 50%, #3a5a2a 100%) !important; }
+    .hero-potm.team-teal-black { background: linear-gradient(135deg, #0a1212 0%, #0a3a3a 50%, #0a4a4a 100%) !important; }
+    
     .potm-hero-badge {
-      background: #ffd700;
+      background: rgba(255,255,255,0.95);
       color: #0f1923;
       padding: 12px 30px;
       border-radius: 30px;
@@ -334,6 +356,7 @@
       display: inline-block;
       margin-bottom: 25px;
       animation: pulse 2s infinite;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
     @keyframes pulse {
@@ -346,10 +369,10 @@
       height: 180px;
       margin: 0 auto 20px;
       border-radius: 50%;
-      border: 5px solid #ffd700;
+      border: 5px solid #fff;
       overflow: hidden;
-      background: rgba(0,0,0,0.3);
-      box-shadow: 0 0 40px rgba(255,215,0,0.5);
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 40px rgba(255,255,255,0.3);
     }
     
     .potm-photo-frame img {
@@ -423,7 +446,7 @@
       <div class="potm-hero-badge">⭐ PLAYER OF THE MATCH ⭐</div>
       
       <div class="potm-photo-frame" id="potmPhotoFrame">
-        <div class="potm-photo-placeholder">🏆</div>
+        <div class="potm-photo-placeholder">⭐</div>
       </div>
       
       <div class="potm-hero-name" id="potmHeroName">Loading...</div>
@@ -577,7 +600,14 @@
       // Check if POTM is selected - show POTM hero
       if (matchData.playerOfMatch) {
         document.getElementById('heroDefault').style.display = 'none';
-        document.getElementById('heroPotm').style.display = 'block';
+        const potmHero = document.getElementById('heroPotm');
+        potmHero.style.display = 'block';
+        
+        // Apply team color class
+        if (matchData.teamColor) {
+          const colorClass = 'team-' + matchData.teamColor.toLowerCase().replace(/[\/\s]/g, '-');
+          potmHero.classList.add(colorClass);
+        }
         
         // Fill POTM hero
         document.getElementById('potmHeroName').textContent = matchData.playerOfMatch;
