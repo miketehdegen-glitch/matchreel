@@ -420,12 +420,12 @@ class VideoProcessor {
           
           segments.push(goalClipToUse);
           
-          // Add slow-mo replay
-          console.log('Creating slow-mo replay...');
-          const slowMoPath = path.join(this.tempDir, `${matchId}-goal-${segmentIndex}-slowmo.mp4`);
-          tempFiles.push(slowMoPath);
-          await this.createSlowMo(goalClipToUse, slowMoPath);
-          segments.push(slowMoPath);
+          // Slow-mo disabled for faster processing
+          // TODO: Add back as optional feature later
+          // const slowMoPath = path.join(this.tempDir, `${matchId}-goal-${segmentIndex}-slowmo.mp4`);
+          // tempFiles.push(slowMoPath);
+          // await this.createSlowMo(goalClipToUse, slowMoPath);
+          // segments.push(slowMoPath);
           
           segmentIndex++;
         }
