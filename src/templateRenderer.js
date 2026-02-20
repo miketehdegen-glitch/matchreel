@@ -14,10 +14,10 @@ class TemplateRenderer {
       const chromiumPaths = [
         process.env.PUPPETEER_EXECUTABLE_PATH,
         process.env.CHROMIUM_PATH,
-        '/nix/var/nix/profiles/default/bin/chromium',
         '/usr/bin/chromium',
         '/usr/bin/chromium-browser',
         '/usr/bin/google-chrome',
+        '/nix/var/nix/profiles/default/bin/chromium',
       ].filter(Boolean);
       
       let executablePath = null;

@@ -6,7 +6,7 @@ const TemplateRenderer = require('./templateRenderer');
 // FFmpeg path - use system ffmpeg on Linux/Railway, Windows path locally
 const FFMPEG_PATH = process.platform === 'win32' 
   ? path.normalize('C:/Users/micha/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe')
-  : 'ffmpeg';
+  : '/usr/bin/ffmpeg';
 
 class VideoProcessor {
   constructor(uploadsDir, outputDir) {
