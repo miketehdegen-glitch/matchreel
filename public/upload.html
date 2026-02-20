@@ -361,6 +361,98 @@
       margin-bottom: 16px;
     }
     
+    .team-photo-upload {
+      margin-bottom: 24px;
+    }
+    
+    .team-photo-area {
+      background: rgba(255,255,255,0.05);
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .team-photo-area:hover {
+      border-color: #00d4ff;
+      background: rgba(0,212,255,0.05);
+    }
+    
+    .team-photo-preview {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .team-photo-preview img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+    
+    .team-photo-preview .remove-photo {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,0,0,0.8);
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .team-photo-preview .photo-status {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,255,136,0.9);
+      color: #000;
+      padding: 8px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    /* POTM nomination */
+    .potm-section {
+      background: rgba(255,215,0,0.1);
+      border: 2px solid rgba(255,215,0,0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .potm-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffd700;
+    }
+    
+    .potm-input {
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 16px;
+    }
+    
+    .potm-input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+    
     .spinner {
       width: 20px;
       height: 20px;
@@ -396,7 +488,23 @@
         <div class="team-colors" id="teamColors"></div>
       </div>
       
-      <div class="section-title">📹 What type of clip?</div>
+      <!-- Team Photo Upload -->
+      <div class="section-title">📸 Got the team photo?</div>
+      <div class="team-photo-upload" id="teamPhotoSection">
+        <div class="team-photo-area" id="teamPhotoArea" onclick="document.getElementById('teamPhotoInput').click()">
+          <div class="upload-icon">👥</div>
+          <div class="upload-text">Tap to upload team photo</div>
+          <div class="upload-hint">Pre-match squad photo</div>
+        </div>
+        <input type="file" id="teamPhotoInput" accept="image/*" style="display:none" onchange="handleTeamPhoto(this)">
+        <div class="team-photo-preview" id="teamPhotoPreview" style="display:none">
+          <img id="teamPhotoImg" src="">
+          <button class="remove-photo" onclick="removeTeamPhoto()">✕</button>
+          <div class="photo-status">✓ Team photo ready</div>
+        </div>
+      </div>
+      
+      <div class="section-title" style="margin-top: 30px;">📹 What type of clip?</div>
       <div class="clip-type-selector" id="clipTypes">
         <div class="clip-type selected" data-type="goal">
           <div class="clip-type-icon">⚽</div>
@@ -430,6 +538,13 @@
         <div class="upload-hint">or drag and drop here</div>
       </div>
       <input type="file" id="fileInput" accept="video/*" multiple>
+      
+      <!-- POTM Nomination -->
+      <div class="potm-section">
+        <div class="potm-title">⭐ Player of the Match</div>
+        <input type="text" class="potm-input" id="potmNomination" placeholder="Who deserves Player of the Match?">
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 8px;">Your vote counts! Coach sees all nominations.</div>
+      </div>
       
       <div class="uploading-indicator" id="uploadingIndicator">
         <div class="spinner"></div>
@@ -586,7 +701,14 @@
           'opp-goal': '😤 Conceded'
         };
         
-        const showScorer = clip.type === 'goal' || clip.type === 'chance';
+        const placeholders = {
+          goal: 'Who scored?',
+          chance: 'Who had the chance?',
+          save: 'Goalkeeper name?',
+          skills: 'Who showed the skills?',
+          celebration: 'Who\'s celebrating?',
+          'opp-goal': 'Who conceded? (optional)'
+        };
         
         return `
           <div class="clip-item">
@@ -597,12 +719,10 @@
               <div class="clip-name">${clip.file.name}</div>
               <div class="clip-meta">${(clip.file.size / 1024 / 1024).toFixed(1)} MB</div>
               <span class="clip-badge">${typeLabels[clip.type]}</span>
-              ${showScorer ? `
-                <input type="text" class="scorer-input" 
-                  placeholder="${clip.type === 'goal' ? 'Who scored?' : 'Who had the chance?'}"
-                  value="${clip.scorer}"
-                  onchange="updateScorer(${i}, this.value)">
-              ` : ''}
+              <input type="text" class="scorer-input" 
+                placeholder="${placeholders[clip.type] || 'Player name?'}"
+                value="${clip.scorer}"
+                onchange="updateScorer(${i}, this.value)">
             </div>
             <button class="clip-remove" onclick="removeClip(${i})">×</button>
           </div>
@@ -669,6 +789,135 @@
       document.getElementById('successState').style.display = 'none';
       renderClipsList();
     }
+    
+    // Team photo handling
+    let teamPhotoFile = null;
+    
+    function handleTeamPhoto(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      teamPhotoFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('teamPhotoImg').src = e.target.result;
+        document.getElementById('teamPhotoArea').style.display = 'none';
+        document.getElementById('teamPhotoPreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function removeTeamPhoto() {
+      teamPhotoFile = null;
+      document.getElementById('teamPhotoInput').value = '';
+      document.getElementById('teamPhotoArea').style.display = 'block';
+      document.getElementById('teamPhotoPreview').style.display = 'none';
+    }
+    
+    // Upload team photo to server
+    async function uploadTeamPhoto() {
+      if (!teamPhotoFile) return;
+      
+      const formData = new FormData();
+      formData.append('photo', teamPhotoFile);
+      
+      try {
+        await fetch(`/api/matches/${matchId}/team-photo-public`, {
+          method: 'POST',
+          body: formData
+        });
+      } catch (err) {
+        console.error('Team photo upload failed:', err);
+      }
+    }
+    
+    // POTM nomination
+    async function submitPotmNomination() {
+      const nomination = document.getElementById('potmNomination').value.trim();
+      if (!nomination) return;
+      
+      try {
+        await fetch(`/api/matches/${matchId}/potm-nomination`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nomination })
+        });
+      } catch (err) {
+        console.error('POTM nomination failed:', err);
+      }
+    }
+    
+    // Modified submit to include team photo and POTM
+    const originalSubmitClips = submitClips;
+    submitClips = async function() {
+      // Upload team photo if selected
+      if (teamPhotoFile) {
+        await uploadTeamPhoto();
+      }
+      
+      // Submit POTM nomination
+      await submitPotmNomination();
+      
+      // Then upload clips
+      if (pendingClips.length === 0 && !teamPhotoFile) {
+        // Nothing to upload but maybe just POTM nomination
+        const potm = document.getElementById('potmNomination').value.trim();
+        if (potm) {
+          document.getElementById('mainUI').style.display = 'none';
+          document.getElementById('successState').style.display = 'block';
+          return;
+        }
+        return;
+      }
+      
+      if (pendingClips.length > 0) {
+        const btn = document.getElementById('submitBtn');
+        const indicator = document.getElementById('uploadingIndicator');
+        
+        btn.disabled = true;
+        btn.textContent = 'Uploading...';
+        indicator.style.display = 'flex';
+        
+        try {
+          for (const clip of pendingClips) {
+            const formData = new FormData();
+            formData.append('video', clip.file);
+            formData.append('type', clip.type);
+            if (clip.scorer) {
+              formData.append('scorer', clip.scorer);
+            }
+            
+            const resp = await fetch(`/api/matches/${matchId}/clips`, {
+              method: 'POST',
+              body: formData
+            });
+            
+            if (!resp.ok) {
+              throw new Error('Upload failed');
+            }
+          }
+          
+          // Success!
+          pendingClips = [];
+          document.getElementById('mainUI').style.display = 'none';
+          document.getElementById('submitBar').style.display = 'none';
+          document.getElementById('successState').style.display = 'block';
+          
+        } catch (err) {
+          console.error('Upload error:', err);
+          alert('Upload failed. Please try again.');
+          btn.disabled = false;
+          btn.textContent = `Upload ${pendingClips.length} clip(s)`;
+        }
+        
+        indicator.style.display = 'none';
+      } else {
+        // Just team photo uploaded
+        document.getElementById('mainUI').style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
+      }
+    };
     
     // Init
     loadMatch();

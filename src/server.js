@@ -580,7 +580,7 @@ app.post('/api/matches/:matchId/potm-photo', photoUpload.single('photo'), (req, 
   }
 });
 
-// Upload team photo
+// Upload team photo (admin)
 app.post('/api/matches/:matchId/team-photo', teamPhotoUpload.single('photo'), (req, res) => {
   try {
     const { matchId } = req.params;
@@ -601,6 +601,68 @@ app.post('/api/matches/:matchId/team-photo', teamPhotoUpload.single('photo'), (r
     saveData(data);
     
     res.json({ success: true, filename: req.file.filename });
+    
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Upload team photo (public - from parent upload page)
+app.post('/api/matches/:matchId/team-photo-public', teamPhotoUpload.single('photo'), (req, res) => {
+  try {
+    const { matchId } = req.params;
+    
+    const data = loadData();
+    const match = data.matches[matchId];
+    
+    if (!match) {
+      return res.status(404).json({ success: false, error: 'Match not found' });
+    }
+    
+    // Only accept if no team photo yet
+    if (!match.teamPhotoFilename) {
+      match.teamPhotoFilename = req.file.filename;
+      saveData(data);
+    }
+    
+    res.json({ success: true, filename: req.file.filename });
+    
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POTM nomination (public - from parent upload page)
+app.post('/api/matches/:matchId/potm-nomination', express.json(), (req, res) => {
+  try {
+    const { matchId } = req.params;
+    const { nomination } = req.body;
+    
+    if (!nomination?.trim()) {
+      return res.status(400).json({ success: false, error: 'Nomination required' });
+    }
+    
+    const data = loadData();
+    const match = data.matches[matchId];
+    
+    if (!match) {
+      return res.status(404).json({ success: false, error: 'Match not found' });
+    }
+    
+    // Initialize nominations array if needed
+    if (!match.potmNominations) {
+      match.potmNominations = [];
+    }
+    
+    // Add nomination
+    match.potmNominations.push({
+      name: nomination.trim(),
+      nominatedAt: new Date().toISOString()
+    });
+    
+    saveData(data);
+    
+    res.json({ success: true, message: 'Nomination recorded' });
     
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
