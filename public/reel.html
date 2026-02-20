@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Match Highlights Ready! ⚽</title>
-  <meta property="og:title" content="Match Highlights Ready! ⚽">
-  <meta property="og:description" content="Watch the highlights and share with friends">
+  <meta property="og:title" content="🏆 Match Highlights Ready!">
+  <meta property="og:description" content="Watch the goals, skills & celebrations! Tap to unlock the highlight reel.">
+  <meta property="og:image" content="https://placehold.co/1200x630/1a1a2e/00ff88/png?text=🏆+HIGHLIGHTS+READY%0ATap+to+Watch!">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://placehold.co/1200x630/1a1a2e/00ff88/png?text=🏆+HIGHLIGHTS+READY%0ATap+to+Watch!">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -311,6 +317,99 @@
     
     #lockedState, #processingState, #unlockedState { display: none; }
     #lockedState.show, #processingState.show, #unlockedState.show { display: block; }
+    
+    /* POTM HERO STYLES */
+    .hero-potm {
+      background: linear-gradient(135deg, #1a1a2e 0%, #ffd700 50%, #ff6b6b 100%) !important;
+      padding: 50px 20px !important;
+    }
+    
+    .potm-hero-badge {
+      background: #ffd700;
+      color: #0f1923;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: inline-block;
+      margin-bottom: 25px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .potm-photo-frame {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      border: 5px solid #ffd700;
+      overflow: hidden;
+      background: rgba(0,0,0,0.3);
+      box-shadow: 0 0 40px rgba(255,215,0,0.5);
+    }
+    
+    .potm-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .potm-photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+    
+    .potm-hero-name {
+      font-size: 2.2rem;
+      font-weight: 900;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+      margin-bottom: 15px;
+    }
+    
+    .match-subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+    
+    .score-display-small {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    
+    .potm-stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .stat-mini {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    
+    /* Hook banner for default hero */
+    .hook-banner {
+      background: rgba(255,215,0,0.9);
+      color: #0f1923;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin: 20px 0;
+      animation: pulse 2s infinite;
+    }
   </style>
 </head>
 <body>
@@ -318,8 +417,34 @@
     🎉 UNLOCKED — Your highlights are ready!
   </div>
 
-  <!-- HERO POSTER -->
-  <div class="hero-poster">
+  <!-- HERO POSTER - POTM VERSION (shown when POTM selected) -->
+  <div class="hero-poster hero-potm" id="heroPotm" style="display:none;">
+    <div class="hero-content">
+      <div class="potm-hero-badge">⭐ PLAYER OF THE MATCH ⭐</div>
+      
+      <div class="potm-photo-frame" id="potmPhotoFrame">
+        <div class="potm-photo-placeholder">🏆</div>
+      </div>
+      
+      <div class="potm-hero-name" id="potmHeroName">Loading...</div>
+      
+      <div class="match-subtitle">
+        <span id="teamNamePotm">Team</span> vs <span id="opponentPotm">Opponent</span>
+      </div>
+      
+      <div class="score-display-small">
+        <span id="homeScorePotm">0</span> - <span id="awayScorePotm">0</span>
+      </div>
+      
+      <div class="potm-stats-row">
+        <div class="stat-mini">⚽ <span id="goalCountPotm">0</span> Goals</div>
+        <div class="stat-mini">🎬 <span id="clipCountPotm">0</span> Clips</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- HERO POSTER - DEFAULT VERSION (no POTM) -->
+  <div class="hero-poster hero-default" id="heroDefault">
     <div class="hero-content">
       <div class="match-badge" id="competitionBadge">Match Highlights</div>
       
@@ -333,6 +458,10 @@
         <span id="homeScore">0</span>
         <span class="divider">-</span>
         <span id="awayScore">0</span>
+      </div>
+      
+      <div class="hook-banner" id="hookBanner">
+        🔥 Watch All The Goals Inside! 🔥
       </div>
       
       <div class="stats-row">
@@ -441,6 +570,57 @@
     }
     
     function renderMatch() {
+      const clips = matchData.clips || [];
+      const goals = clips.filter(c => c.type === 'goal').length;
+      const highlights = clips.filter(c => ['tekkers', 'skills', 'celebration', 'siuuu'].includes(c.type)).length;
+      
+      // Check if POTM is selected - show POTM hero
+      if (matchData.playerOfMatch) {
+        document.getElementById('heroDefault').style.display = 'none';
+        document.getElementById('heroPotm').style.display = 'block';
+        
+        // Fill POTM hero
+        document.getElementById('potmHeroName').textContent = matchData.playerOfMatch;
+        document.getElementById('teamNamePotm').textContent = matchData.teamName;
+        document.getElementById('opponentPotm').textContent = matchData.opponent;
+        
+        if (matchData.score) {
+          document.getElementById('homeScorePotm').textContent = matchData.score.home;
+          document.getElementById('awayScorePotm').textContent = matchData.score.away;
+        }
+        
+        document.getElementById('goalCountPotm').textContent = goals;
+        document.getElementById('clipCountPotm').textContent = clips.length;
+        
+        // Add POTM photo if available
+        if (matchData.potmPhoto) {
+          document.getElementById('potmPhotoFrame').innerHTML = 
+            `<img src="/uploads/${matchData.matchId || window.location.pathname.split('/').pop()}/${matchData.potmPhoto}" alt="${matchData.playerOfMatch}">`;
+        }
+        
+        // Hide the lower POTM section since it's now the hero
+        if (document.getElementById('potmSection')) {
+          document.getElementById('potmSection').style.display = 'none';
+        }
+      } else {
+        // Show default hero with hook
+        document.getElementById('heroDefault').style.display = 'block';
+        document.getElementById('heroPotm').style.display = 'none';
+        
+        // Dynamic hook based on content
+        const hookEl = document.getElementById('hookBanner');
+        if (goals >= 3) {
+          hookEl.textContent = `🔥 ${goals} GOALS! Watch Them All! 🔥`;
+        } else if (goals > 0) {
+          hookEl.textContent = `⚽ ${goals} Goal${goals > 1 ? 's' : ''} + ${highlights} Highlights Inside! ⚽`;
+        } else if (clips.length > 0) {
+          hookEl.textContent = `🎬 ${clips.length} Action Clips Inside! 🎬`;
+        } else {
+          hookEl.textContent = `🔥 Match Highlights Coming Soon! 🔥`;
+        }
+      }
+      
+      // Fill default hero (always, for fallback)
       document.getElementById('teamName').textContent = matchData.teamName;
       document.getElementById('opponent').textContent = matchData.opponent;
       
@@ -452,10 +632,6 @@
         document.getElementById('homeScore').textContent = matchData.score.home;
         document.getElementById('awayScore').textContent = matchData.score.away;
       }
-      
-      const clips = matchData.clips || [];
-      const goals = clips.filter(c => c.type === 'goal').length;
-      const highlights = clips.filter(c => ['tekkers', 'skills', 'celebration', 'siuuu'].includes(c.type)).length;
       
       document.getElementById('clipCount').textContent = clips.length;
       document.getElementById('goalCount').textContent = goals;
@@ -471,11 +647,6 @@
         `<span class="clip-tag ${type}">${count}x ${type.replace('-', ' ')}</span>`
       ).join('');
       document.getElementById('clipsPreview').innerHTML = previewHtml || '<span style="color:#666">No clips yet</span>';
-      
-      if (matchData.playerOfMatch) {
-        document.getElementById('potmSection').style.display = 'block';
-        document.getElementById('potmName').textContent = matchData.playerOfMatch;
-      }
       
       // Check status
       if (matchData.unlocked) {

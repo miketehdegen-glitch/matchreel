@@ -16,14 +16,19 @@ console.log('🔑 Webhook secret:', !!STRIPE_WEBHOOK_SECRET);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Data storage (JSON file for MVP - would be database in production)
-const DATA_FILE = path.join(__dirname, '../data/matches.json');
-const VOUCHERS_FILE = path.join(__dirname, '../data/vouchers.json');
-const UPLOADS_DIR = path.join(__dirname, '../uploads');
-const OUTPUT_DIR = path.join(__dirname, '../output');
+// Data storage - use persistent volume on Railway, local paths otherwise
+// Railway volume should be mounted at /data
+const PERSIST_ROOT = process.env.RAILWAY_ENVIRONMENT ? '/data' : path.join(__dirname, '..');
+const DATA_FILE = path.join(PERSIST_ROOT, 'matches.json');
+const VOUCHERS_FILE = path.join(PERSIST_ROOT, 'vouchers.json');
+const UPLOADS_DIR = path.join(PERSIST_ROOT, 'uploads');
+const OUTPUT_DIR = path.join(PERSIST_ROOT, 'output');
+
+console.log('💾 Storage root:', PERSIST_ROOT);
+console.log('📁 Data file:', DATA_FILE);
 
 // Ensure directories exist
-[path.dirname(DATA_FILE), UPLOADS_DIR, OUTPUT_DIR].forEach(dir => {
+[PERSIST_ROOT, UPLOADS_DIR, OUTPUT_DIR].forEach(dir => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
@@ -38,10 +43,21 @@ if (!fs.existsSync(VOUCHERS_FILE)) {
     vouchers: {
       'FIRSTFREE': { discount: 100, maxUses: 100, uses: 0, description: 'First match free' },
       'TRYME': { discount: 100, maxUses: 50, uses: 0, description: 'Trial voucher' },
-      'HALF50': { discount: 50, maxUses: 100, uses: 0, description: '50% off' }
+      'HALF50': { discount: 50, maxUses: 100, uses: 0, description: '50% off' },
+      'MARCH26': { discount: 100, maxUses: 500, uses: 0, description: 'Free until April 2026' }
     }
   }, null, 2));
 }
+
+// Ensure MARCH26 voucher exists (migration)
+try {
+  const voucherData = JSON.parse(fs.readFileSync(VOUCHERS_FILE, 'utf8'));
+  if (!voucherData.vouchers['MARCH26']) {
+    voucherData.vouchers['MARCH26'] = { discount: 100, maxUses: 500, uses: 0, description: 'Free until April 2026' };
+    fs.writeFileSync(VOUCHERS_FILE, JSON.stringify(voucherData, null, 2));
+    console.log('✅ Added MARCH26 voucher');
+  }
+} catch (e) { console.log('Voucher migration skipped:', e.message); }
 
 // Voucher helpers
 function loadVouchers() {
@@ -330,7 +346,7 @@ app.post('/api/matches/:matchId/squad', (req, res) => {
 app.put('/api/matches/:matchId', (req, res) => {
   try {
     const { matchId } = req.params;
-    const { adminToken, score, playerOfMatch, teamOfDay, status, musicUrl, musicTitle } = req.body;
+    const { adminToken, score, playerOfMatch, teamOfDay, status, musicUrl, musicTitle, commentarySounds } = req.body;
     
     const data = loadData();
     const match = data.matches[matchId];
@@ -347,6 +363,7 @@ app.put('/api/matches/:matchId', (req, res) => {
     if (playerOfMatch) match.playerOfMatch = playerOfMatch;
     if (teamOfDay) match.teamOfDay = teamOfDay;
     if (status) match.status = status;
+    if (commentarySounds !== undefined) match.commentarySounds = commentarySounds;
     if (musicUrl !== undefined) match.musicUrl = musicUrl;
     if (musicTitle !== undefined) match.musicTitle = musicTitle;
     

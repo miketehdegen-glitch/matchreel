@@ -3,8 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const TemplateRenderer = require('./templateRenderer');
 
-// FFmpeg path (winget install location)
-const FFMPEG_PATH = path.normalize('C:/Users/micha/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe');
+// FFmpeg path - use system ffmpeg on Linux/Railway, Windows path locally
+const FFMPEG_PATH = process.platform === 'win32' 
+  ? path.normalize('C:/Users/micha/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe')
+  : 'ffmpeg';
 
 class VideoProcessor {
   constructor(uploadsDir, outputDir) {
@@ -95,6 +97,60 @@ class VideoProcessor {
       '-y',
       outputPath
     ];
+    await this.runFFmpeg(args);
+  }
+  
+  // Add commentary sound effect to a video clip (for goals)
+  async addCommentarySound(videoPath, outputPath, soundsDir) {
+    // Get available sound files
+    const soundFiles = fs.readdirSync(soundsDir).filter(f => f.endsWith('.mp3') || f.endsWith('.wav'));
+    
+    if (soundFiles.length === 0) {
+      console.log('No commentary sounds found, skipping...');
+      fs.copyFileSync(videoPath, outputPath);
+      return;
+    }
+    
+    // Pick a random sound
+    const randomSound = soundFiles[Math.floor(Math.random() * soundFiles.length)];
+    const soundPath = path.join(soundsDir, randomSound);
+    console.log(`Adding commentary sound: ${randomSound}`);
+    
+    // Check if video has audio
+    const hasAudio = await this.videoHasAudio(videoPath);
+    
+    let args;
+    if (hasAudio) {
+      // Mix video audio with commentary sound (commentary louder)
+      args = [
+        '-i', videoPath,
+        '-i', soundPath,
+        '-filter_complex', '[1:a]adelay=500|500,volume=1.5[sfx];[0:a]volume=0.6[orig];[orig][sfx]amix=inputs=2:duration=first[aout]',
+        '-map', '0:v',
+        '-map', '[aout]',
+        '-c:v', 'copy',
+        '-c:a', 'aac',
+        '-b:a', '192k',
+        '-y',
+        outputPath
+      ];
+    } else {
+      // No video audio - just add commentary sound
+      args = [
+        '-i', videoPath,
+        '-i', soundPath,
+        '-filter_complex', '[1:a]adelay=500|500,volume=1.2[aout]',
+        '-map', '0:v',
+        '-map', '[aout]',
+        '-c:v', 'copy',
+        '-c:a', 'aac',
+        '-b:a', '192k',
+        '-shortest',
+        '-y',
+        outputPath
+      ];
+    }
+    
     await this.runFFmpeg(args);
   }
 
@@ -257,8 +313,16 @@ class VideoProcessor {
       teamOfDay = [],
       potmPhotoFilename,
       teamLogo,
-      colors = { primary: '#0099cc', secondary: '#00ccff' }
+      colors = { primary: '#0099cc', secondary: '#00ccff' },
+      commentarySounds = false
     } = matchData;
+    
+    // Sounds directory for commentary
+    const soundsDir = path.join(__dirname, '../public/sounds');
+    const hasSounds = commentarySounds && fs.existsSync(soundsDir) && fs.readdirSync(soundsDir).filter(f => f.endsWith('.mp3') || f.endsWith('.wav')).length > 0;
+    if (commentarySounds) {
+      console.log(`🎙️ Commentary sounds: ${hasSounds ? 'ENABLED' : 'enabled but no sounds found'}`);
+    }
 
     const matchDir = path.join(this.uploadsDir, matchId);
     const outputPath = path.join(this.outputDir, `${matchId}-highlight-reel.mp4`);
@@ -323,13 +387,22 @@ class VideoProcessor {
           await this.renderer.renderGoalOverlay(goal.scorer || 'GOAL!', overlayPng, colors);
           await this.overlayImage(normPath, overlayPng, finalPath);
           
-          segments.push(finalPath);
+          // Add commentary sound if enabled
+          let goalClipToUse = finalPath;
+          if (hasSounds) {
+            const withSoundPath = path.join(this.tempDir, `${matchId}-goal-${segmentIndex}-sound.mp4`);
+            tempFiles.push(withSoundPath);
+            await this.addCommentarySound(finalPath, withSoundPath, soundsDir);
+            goalClipToUse = withSoundPath;
+          }
+          
+          segments.push(goalClipToUse);
           
           // Add slow-mo replay
           console.log('Creating slow-mo replay...');
           const slowMoPath = path.join(this.tempDir, `${matchId}-goal-${segmentIndex}-slowmo.mp4`);
           tempFiles.push(slowMoPath);
-          await this.createSlowMo(finalPath, slowMoPath);
+          await this.createSlowMo(goalClipToUse, slowMoPath);
           segments.push(slowMoPath);
           
           segmentIndex++;
@@ -547,9 +620,12 @@ class VideoProcessor {
         }
       }
       
-      // Fallback to default music if exists
+      // Fallback to default music if exists (check both local and app directory)
       if (!fs.existsSync(musicPath)) {
         musicPath = path.join(__dirname, '../assets/music/background.mp3');
+      }
+      if (!fs.existsSync(musicPath)) {
+        musicPath = '/app/assets/music/background.mp3';
       }
       
       if (fs.existsSync(musicPath)) {

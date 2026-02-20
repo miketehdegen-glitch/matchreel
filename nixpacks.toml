@@ -9,4 +9,5 @@ cmd = "node src/server.js"
 
 [variables]
 PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
-PUPPETEER_EXECUTABLE_PATH = "/nix/store/chromium/bin/chromium"
+PUPPETEER_EXECUTABLE_PATH = "/nix/var/nix/profiles/default/bin/chromium"
+CHROMIUM_PATH = "/nix/var/nix/profiles/default/bin/chromium"

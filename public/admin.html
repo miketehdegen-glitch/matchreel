@@ -509,6 +509,61 @@
       </div>
     </div>
     
+    <!-- Commentary Sounds Toggle -->
+    <div class="section">
+      <h3>🎙️ Commentary Sounds</h3>
+      <p style="color: #8899a6; margin-bottom: 15px;">Add random crowd cheers and commentary to goal clips</p>
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <label class="toggle-switch">
+          <input type="checkbox" id="commentarySounds">
+          <span class="toggle-slider"></span>
+        </label>
+        <span id="commentaryStatus" style="color: #8899a6;">Off</span>
+      </div>
+      <p style="color: #666; font-size: 0.8rem; margin-top: 10px;">🔊 Includes: crowd cheers, goal celebrations, "GOOOAL!" shouts</p>
+    </div>
+    
+    <style>
+      .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 32px;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.1);
+        border-radius: 32px;
+        transition: 0.3s;
+      }
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 24px;
+        width: 24px;
+        left: 4px;
+        bottom: 4px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .toggle-switch input:checked + .toggle-slider {
+        background: #00ff88;
+      }
+      .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(28px);
+      }
+    </style>
+    
     <!-- Main CTA Button -->
     <div id="mainCTA">
       <button class="btn btn-primary" onclick="shareToGroup()" style="font-size: 1.4rem; padding: 25px; margin-top: 20px;">
@@ -828,13 +883,16 @@
           });
         }
         
+        const commentarySounds = document.getElementById('commentarySounds')?.checked || false;
+        
         const res = await fetch(`/api/matches/${matchId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             adminToken,
             score: homeScore && awayScore ? { home: parseInt(homeScore), away: parseInt(awayScore) } : null,
-            playerOfMatch: playerOfMatch || null
+            playerOfMatch: playerOfMatch || null,
+            commentarySounds: commentarySounds
           })
         });
         
@@ -1271,6 +1329,33 @@
       status.textContent = message;
       status.className = 'show ' + type;
     }
+    
+    // Commentary toggle handler
+    document.getElementById('commentarySounds')?.addEventListener('change', function() {
+      const statusEl = document.getElementById('commentaryStatus');
+      statusEl.textContent = this.checked ? 'On 🔊' : 'Off';
+      statusEl.style.color = this.checked ? '#00ff88' : '#8899a6';
+    });
+    
+    // Load saved commentary state when match loads
+    function loadCommentaryState() {
+      if (matchData && matchData.commentarySounds !== undefined) {
+        const toggle = document.getElementById('commentarySounds');
+        const statusEl = document.getElementById('commentaryStatus');
+        if (toggle) {
+          toggle.checked = matchData.commentarySounds;
+          statusEl.textContent = matchData.commentarySounds ? 'On 🔊' : 'Off';
+          statusEl.style.color = matchData.commentarySounds ? '#00ff88' : '#8899a6';
+        }
+      }
+    }
+    
+    // Patch loadMatch to also load commentary state
+    const originalLoadMatch = loadMatch;
+    loadMatch = async function() {
+      await originalLoadMatch();
+      loadCommentaryState();
+    };
     
     // Check for admin token
     if (!adminToken) {

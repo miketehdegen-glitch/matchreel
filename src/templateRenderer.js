@@ -13,6 +13,8 @@ class TemplateRenderer {
       // Find chromium - check various paths for Railway/Nix
       const chromiumPaths = [
         process.env.PUPPETEER_EXECUTABLE_PATH,
+        process.env.CHROMIUM_PATH,
+        '/nix/var/nix/profiles/default/bin/chromium',
         '/usr/bin/chromium',
         '/usr/bin/chromium-browser',
         '/usr/bin/google-chrome',
