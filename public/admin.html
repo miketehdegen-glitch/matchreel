@@ -998,24 +998,34 @@
       document.getElementById('shareSection').style.display = 'block';
       document.getElementById('reelShareUrl').value = `${window.location.origin}/reel/${matchId}`;
       
-      // Update poster stats in share section
+      // Update poster stats in share section - show all clip types that have counts > 0
+      const clipTypes = [
+        { type: 'goal', emoji: '⚽', label: 'Goals', color: '#00ff88' },
+        { type: 'tekkers', emoji: '🔥', label: 'Tekkers', color: '#ff6b6b' },
+        { type: 'pass', emoji: '🎯', label: 'Passes', color: '#3498db' },
+        { type: 'chance', emoji: '💥', label: 'Chances', color: '#ffa502' },
+        { type: 'celebration', emoji: '🎉', label: 'Celebrations', color: '#ffd700' },
+        { type: 'siuuu', emoji: '🙌', label: 'SIUUU', color: '#ff69b4' },
+        { type: 'opp-goal', emoji: '❌', label: 'Opp Goals', color: '#ff0050' },
+        { type: 'save', emoji: '🧤', label: 'Saves', color: '#9b59b6' },
+        { type: 'skills', emoji: '✨', label: 'Skills', color: '#e056fd' },
+        { type: 'tackle', emoji: '💪', label: 'Tackles', color: '#27ae60' }
+      ];
+      
+      const statsItems = clipTypes
+        .map(ct => ({ ...ct, count: clips.filter(c => c.type === ct.type).length }))
+        .filter(ct => ct.count > 0)
+        .map(ct => `
+          <div style="text-align: center; min-width: 60px;">
+            <div style="font-size: 1.5rem;">${ct.emoji}</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: ${ct.color};">${ct.count}</div>
+            <div style="font-size: 0.7rem; color: #8899a6;">${ct.label}</div>
+          </div>
+        `).join('');
+      
       const statsHtml = `
-        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-          <div style="text-align: center;">
-            <div style="font-size: 2rem;">⚽</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #00ff88;">${clips.filter(c => c.type === 'goal').length}</div>
-            <div style="font-size: 0.8rem; color: #8899a6;">Goals</div>
-          </div>
-          <div style="text-align: center;">
-            <div style="font-size: 2rem;">🎯</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #00d4ff;">${clips.filter(c => c.type === 'chance').length}</div>
-            <div style="font-size: 0.8rem; color: #8899a6;">Chances</div>
-          </div>
-          <div style="text-align: center;">
-            <div style="font-size: 2rem;">🔥</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #ff6b6b;">${clips.filter(c => c.type === 'skills').length}</div>
-            <div style="font-size: 0.8rem; color: #8899a6;">Skills</div>
-          </div>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+          ${statsItems || '<div style="color: #8899a6;">No clips yet</div>'}
         </div>
       `;
       document.getElementById('shareSection').querySelector('h2').insertAdjacentHTML('afterend', statsHtml);
